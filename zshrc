@@ -53,6 +53,6 @@ source $ZSH/oh-my-zsh.sh
 ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git)
 
-alias zshconfig="mate ~/.zshrc"
+alias zshconfig="vim ~/.zshrc"
 alias python="$(pyenv which python)"
 alias pip="$(pyenv which pip)"
