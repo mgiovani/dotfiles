@@ -173,6 +173,5 @@ if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
 endif
 
-
 " WSL Copy
 autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' |  clip.exe')
