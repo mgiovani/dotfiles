@@ -8,8 +8,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-
 call plug#begin()
+
 " Code formatter and requirements
 Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
@@ -25,7 +25,8 @@ Plug 'dkprice/vim-easygrep'
 " Vim Customization
 Plug 'chriskempson/base16-vim'
 Plug 'bling/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
+Plug 'junegunn/fzf.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
@@ -45,7 +46,7 @@ Plug 'nvie/vim-flake8'
 Plug 'fatih/vim-go'
 
 " Random
-Plug 'sotte/presenting.vim'
+Plug 'github/copilot.vim'
 
 call plug#end()
 
@@ -107,9 +108,20 @@ nnoremap <Right> :vertical resize -2<CR>
 nnoremap <Up>    :resize +2<CR>
 nnoremap <leader>W :%s/\s\+$//<CR>:let @/=''<CR>
 nnoremap ` '
+nnoremap <c-p> :Files<CR>
 noremap Q <Nop>
 set listchars=tab:▸\ ,space:·,eol:¬
 vnoremap / /\v
+
+" Ag vim
+command! -bang -nargs=* Ag
+  \ call fzf#vim#grep(
+  \   'ag --column --numbers --noheading --color --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+" FZF
+let g:fzf_preview_window = ['right,50%', 'ctrl-/']
+let g:fzf_tags_command = 'ctags -R'
 
 " Collors and Themes
 syntax on
@@ -160,3 +172,7 @@ if executable('ag')
     " Use ag over grep
     set grepprg=ag\ --nogroup\ --nocolor
 endif
+
+
+" WSL Copy
+autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' |  clip.exe')
