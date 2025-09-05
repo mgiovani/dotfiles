@@ -131,7 +131,6 @@ install_modern_cli_tools() {
         "python@3.12"       # Python
         "go"                # Go language
         "rust"              # Rust language
-        "ruby"              # Ruby language
         
         # Databases
         "postgresql@15"     # PostgreSQL database
@@ -317,19 +316,6 @@ setup_dev_environment() {
         print_success "pyenv already installed"
     fi
     
-    # Install Ruby version manager (rbenv)
-    if ! command -v rbenv &> /dev/null; then
-        print_status "Installing rbenv..."
-        brew install rbenv ruby-build
-        echo 'eval "$(rbenv init - zsh)"' >> ~/.zprofile
-        
-        # Install latest stable Ruby
-        rbenv install 3.2.0
-        rbenv global 3.2.0
-        print_success "rbenv and Ruby 3.2.0 installed"
-    else
-        print_success "rbenv already installed"
-    fi
 }
 
 # Configure macOS system preferences
@@ -445,8 +431,8 @@ cleanup_and_summary() {
     echo "  • Development applications (VS Code, Docker, etc.)"
     echo "  • Productivity tools (Raycast, Rectangle, etc.)"
     echo "  • Developer fonts (Nerd Fonts)"
-    echo "  • Programming languages (Node.js, Python, Ruby, Go, Rust)"
-    echo "  • Development environment (NVM, pyenv, rbenv)"
+    echo "  • Programming languages (Node.js, Python, Go, Rust)"
+    echo "  • Development environment (NVM, pyenv)"
     echo
     print_status "Next steps:"
     echo "  1. Install your dotfiles: ./scripts/install.sh"
