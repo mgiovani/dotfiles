@@ -1,11 +1,11 @@
 # Dotfiles
 
-Personal dotfiles for macOS development environment with modern tools and configurations.
+Modern dotfiles for macOS development environment with curated tools and configurations. Designed to be used by anyone looking for a productive development setup.
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-username/dotfiles.git ~/projects/dotfiles
+git clone https://github.com/mgiovani/dotfiles.git ~/projects/dotfiles
 cd ~/projects/dotfiles
 make install
 ```
