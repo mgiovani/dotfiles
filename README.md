@@ -104,7 +104,7 @@ All configurations include fallbacks to traditional tools if modern ones aren't 
 **Key Tools:**
 - **Powerlevel10k**: Fast, customizable zsh theme (installed via brew)
 - **Base16 Shell**: Consistent color themes across all terminal applications
-- **Delta**: Beautiful git diffs with syntax highlighting
+- **Delta**: Beautiful git diffs optimized for dark terminals with readable colors
 - **Tmux**: Terminal multiplexer with vim-like navigation
 - **Cursor**: AI-enhanced VS Code fork for modern development
 
