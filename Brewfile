@@ -67,7 +67,8 @@ brew "go"               # Go language
 
 # Package managers
 brew "nvm"              # Node version manager (alternative to manual install)
-# Note: pyenv and rbenv installed via script for better integration
+brew "pyenv"            # Python version manager
+# Note: rbenv installed via script for better integration
 
 # ==================== DATABASES ====================
 brew "libpq"            # PostgreSQL client library and tools (psql)
