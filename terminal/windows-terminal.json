@@ -22,7 +22,7 @@
                 "fontFace": "Consolas NF",
                 "bellStyle": "none",
                 "closeOnExit": "always",
-                "startingDirectory": "\\\\wsl.localhost\\Ubuntu-20.04\\home\\mgiovani"
+                "startingDirectory": "\\\\wsl.localhost\\Ubuntu-20.04\\home\\your-username"
             },
             {
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
