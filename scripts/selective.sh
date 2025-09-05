@@ -82,6 +82,7 @@ install_dotfiles() {
     "$SCRIPT_DIR/install.sh"
 }
 
+
 install_interactive() {
     echo -e "${GREEN}Interactive installation - choose each package individually${NC}"
     echo -e "${BLUE}(Will ask about each package, then install all selected at once)${NC}"

@@ -39,183 +39,112 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
     if [[ -f "$DOTFILES_DIR/install-config.example.yml" ]]; then
         print_status "Creating config file from example..."
         cp "$DOTFILES_DIR/install-config.example.yml" "$CONFIG_FILE"
-        print_warning "Please edit $CONFIG_FILE to customize your installation"
-        print_status "Run this script again after configuration"
+        print_warning "Configuration file created at: $CONFIG_FILE"
+        print_status "The file contains ALL packages from Brewfile - just remove the ones you don't want!"
+        print_status "Run this script again after customizing your configuration"
         exit 0
     else
         print_error "No configuration file found!"
-        print_status "Create $CONFIG_FILE or run ./scripts/selective-install.sh for interactive mode"
+        print_status "Create $CONFIG_FILE or run ./scripts/selective.sh for interactive mode"
         exit 1
     fi
 fi
 
-# Simple YAML parser (basic key-value extraction)
-get_config_value() {
-    local key="$1"
-    grep "^$key:" "$CONFIG_FILE" | sed 's/.*: *//' | tr -d '"' | head -1
+print_status "Reading configuration from: $CONFIG_FILE"
+
+# Check and install Homebrew if needed
+check_homebrew() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if ! command -v brew &> /dev/null; then
+            print_status "Installing Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            
+            # Add to PATH for Apple Silicon
+            if [[ $(uname -m) == "arm64" ]]; then
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+            fi
+            print_success "Homebrew installed!"
+        else
+            print_success "Homebrew already installed"
+        fi
+    fi
 }
 
-get_category_enabled() {
-    local category="$1"
-    grep -A 20 "^categories:" "$CONFIG_FILE" | grep "^  $category:" | sed 's/.*: *//' | head -1
+# Simple YAML parser for our specific format
+parse_packages() {
+    local section="$1"
+    local config_file="$2"
+    
+    # Extract packages from specific section, removing comments and formatting
+    awk "
+        /^$section:/ { in_section=1; next }
+        /^[a-zA-Z]/ && in_section { in_section=0 }
+        in_section && /^  - / { 
+            gsub(/^  - /, \"\")
+            gsub(/ *#.*/, \"\")
+            gsub(/^ */, \"\")
+            gsub(/ *$/, \"\")
+            if (\$0 != \"\") print \$0
+        }
+    " "$config_file"
 }
 
-# Read configuration
-MODE=$(get_config_value "mode")
-TERMINAL_PREF=$(get_config_value "terminal_preference")
-LAUNCHER_PREF=$(get_config_value "launcher_preference")
-
-print_status "Installation mode: $MODE"
-print_status "Config file: $CONFIG_FILE"
-
-# Enterprise mode check
-if [[ "$MODE" == "enterprise" ]]; then
-    print_warning "Enterprise mode detected"
+# Install packages
+install_packages() {
+    local package_type="$1"
+    local section="$2"
     
-    # Just install dotfiles and safe user tools
-    print_status "Installing dotfiles..."
-    if [[ -f "$SCRIPT_DIR/install.sh" ]]; then
-        "$SCRIPT_DIR/install.sh"
+    local packages=($(parse_packages "$section" "$CONFIG_FILE"))
+    
+    if [[ ${#packages[@]} -eq 0 ]]; then
+        print_warning "No packages found in $section section"
+        return
     fi
     
-    # Install NVM (safe)
-    if [[ ! -d "$HOME/.nvm" ]]; then
-        print_status "Installing NVM..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    fi
+    print_status "Installing ${#packages[@]} packages from $section..."
     
-    # Install Python packages in user space
-    print_status "Installing Python development tools..."
-    pip3 install --user ipython black flake8 pytest requests
-    
-    print_success "Enterprise-safe installation complete!"
-    exit 0
-fi
-
-# Build package list based on config
-declare -a BREW_PACKAGES
-declare -a CASK_PACKAGES
-
-# Essential packages (if enabled)
-if [[ "$(get_category_enabled "essential")" == "true" ]]; then
-    BREW_PACKAGES+=(curl wget git openssh gnupg stow)
-fi
-
-# Modern CLI packages
-if [[ "$(get_category_enabled "modern_cli")" == "true" ]]; then
-    BREW_PACKAGES+=(ripgrep fzf fd bat eza dust duf procs bottom tree zoxide mcfly tldr thefuck trash choose navi)
-fi
-
-# Development tools
-if [[ "$(get_category_enabled "dev_tools")" == "true" ]]; then
-    BREW_PACKAGES+=(vim neovim tmux jq yq fx httpie hyperfine lf watch)
-    BREW_PACKAGES+=(node python@3.12 go libpq sqlite docker-compose bruno-cli gh delta)
-    CASK_PACKAGES+=(docker visual-studio-code)
-fi
-
-# AI tools
-if [[ "$(get_category_enabled "ai_tools")" == "true" ]]; then
-    CASK_PACKAGES+=(cursor)
-fi
-
-# Terminal applications
-if [[ "$(get_category_enabled "terminals")" == "true" ]]; then
-    CASK_PACKAGES+=(iterm2)
-    
-    # Add preferred terminal
-    case "$TERMINAL_PREF" in
-        warp) CASK_PACKAGES+=(warp) ;;
-        kitty) CASK_PACKAGES+=(kitty) ;;
-        alacritty) CASK_PACKAGES+=(alacritty) ;;
-        hyper) CASK_PACKAGES+=(hyper) ;;
-    esac
-fi
-
-# Productivity apps
-if [[ "$(get_category_enabled "productivity")" == "true" ]]; then
-    CASK_PACKAGES+=(rectangle)
-    
-    # Add preferred launcher
-    case "$LAUNCHER_PREF" in
-        raycast) CASK_PACKAGES+=(raycast) ;;
-    esac
-fi
-
-# Security tools
-if [[ "$(get_category_enabled "security")" == "true" ]]; then
-    CASK_PACKAGES+=(1password 1password-cli bitwarden little-snitch)
-fi
-
-# Browsers
-if [[ "$(get_category_enabled "browsers")" == "true" ]]; then
-    CASK_PACKAGES+=(google-chrome firefox brave-browser)
-fi
-
-# System utilities  
-if [[ "$(get_category_enabled "system")" == "true" ]]; then
-    BREW_PACKAGES+=(mas)
-    CASK_PACKAGES+=(the-unarchiver appcleaner)
-fi
-
-# Fonts
-if [[ "$(get_category_enabled "fonts")" == "true" ]]; then
-    CASK_PACKAGES+=(font-fira-code-nerd-font font-jetbrains-mono-nerd-font font-cascadia-code)
-fi
-
-# Install Homebrew if needed
-if [[ ${#BREW_PACKAGES[@]} -gt 0 ]] || [[ ${#CASK_PACKAGES[@]} -gt 0 ]]; then
-    if ! command -v brew &> /dev/null; then
-        print_status "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        
-        # Add to PATH for Apple Silicon
-        if [[ $(uname -m) == "arm64" ]]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    fi
-fi
-
-# Install CLI packages
-if [[ ${#BREW_PACKAGES[@]} -gt 0 ]]; then
-    print_status "Installing ${#BREW_PACKAGES[@]} CLI packages..."
-    for package in "${BREW_PACKAGES[@]}"; do
-        if brew list "$package" &>/dev/null; then
-            print_success "$package already installed"
-        else
+    for package in "${packages[@]}"; do
+        if [[ -n "$package" ]]; then
             print_status "Installing $package..."
-            brew install "$package" || print_warning "Failed to install $package"
-        fi
-    done
-fi
-
-# Install GUI applications
-if [[ ${#CASK_PACKAGES[@]} -gt 0 ]]; then
-    print_status "Installing ${#CASK_PACKAGES[@]} GUI applications..."
-    
-    # Add font tap if needed
-    for package in "${CASK_PACKAGES[@]}"; do
-        if [[ "$package" == font-* ]]; then
-            brew tap homebrew/cask-fonts 2>/dev/null || true
-            break
+            if [[ "$package_type" == "cask" ]]; then
+                brew install --cask "$package" 2>/dev/null || print_warning "Failed to install $package"
+            else
+                brew install "$package" 2>/dev/null || print_warning "Failed to install $package"
+            fi
         fi
     done
     
-    for package in "${CASK_PACKAGES[@]}"; do
-        if brew list --cask "$package" &>/dev/null; then
-            print_success "$package already installed"
-        else
-            print_status "Installing $package..."
-            brew install --cask "$package" || print_warning "Failed to install $package"
-        fi
-    done
-fi
+    print_success "$section installation completed"
+}
 
 # Install dotfiles
-print_status "Installing dotfiles..."
-if [[ -f "$SCRIPT_DIR/install.sh" ]]; then
-    "$SCRIPT_DIR/install.sh"
-fi
+install_dotfiles() {
+    if grep -q "install_dotfiles: true" "$CONFIG_FILE" 2>/dev/null; then
+        print_status "Installing dotfiles configurations..."
+        "$SCRIPT_DIR/install.sh"
+    else
+        print_status "Skipping dotfiles installation (disabled in config)"
+    fi
+}
 
-print_success "🎉 Configuration-based installation complete!"
-print_status "Installed $(( ${#BREW_PACKAGES[@]} + ${#CASK_PACKAGES[@]} )) packages"
-print_status "Config used: $CONFIG_FILE"
+
+# Main installation function
+main() {
+    print_status "Starting configuration-based installation..."
+    
+    check_homebrew
+    
+    # Install packages by section
+    install_packages "brew" "cli_tools"
+    install_packages "cask" "applications" 
+    install_packages "cask" "fonts"
+    
+    # Install dotfiles if enabled
+    install_dotfiles
+    
+    print_success "Configuration-based installation completed!"
+    print_status "Installed packages based on: $CONFIG_FILE"
+    print_status "To modify your installation, edit the config file and run this script again"
+}
+
+main "$@"

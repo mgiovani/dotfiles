@@ -1,43 +1,148 @@
 # Installation Configuration File
-# Copy this to install-config.yml and customize
+# Copy this to install-config.yml and customize by removing packages you don't want
 
-# Installation mode (enterprise, minimal, full, custom)
+# Installation mode
 mode: custom
 
-# Categories to install (comment out what you don't want)
-categories:
-  essential: true          # curl, wget, git, openssh, gnupg, stow
-  modern_cli: true         # ripgrep, fzf, fd, bat, eza, etc.
-  dev_tools: true          # vim, tmux, node, python, go, rust, databases
-  ai_tools: true           # cursor (disable if company blocks AI)
-  terminals: true          # iterm2, warp
-  productivity: true       # raycast, rectangle, system utilities
-  security: false          # 1password, little-snitch (may conflict with corporate)
-  browsers: true           # chrome, firefox, brave, orion
-  media: false             # vlc, figma, design tools
-  system: true             # mas, cleanmymac, system utilities
-  fonts: true              # nerd fonts for better terminal experience
+# All CLI tools from Brewfile (remove the ones you don't want)
+cli_tools:
+  # Essential system tools
+  - curl
+  - wget
+  - git
+  - openssh
+  - gnupg
+  - stow
+  
+  # Modern CLI replacements
+  - ripgrep          # faster grep replacement
+  - fzf              # fuzzy finder
+  - fd               # faster find replacement
+  - bat              # better cat with syntax highlighting
+  - eza              # modern ls replacement
+  - dust             # better du replacement
+  - duf              # better df replacement
+  - procs            # modern ps replacement
+  - bottom           # system monitor
+  - tree             # directory tree display
+  - zoxide           # smarter cd command
+  - mcfly            # upgraded ctrl-r
+  - tldr             # simplified man pages
+  - thefuck          # corrects previous commands
+  - trash            # safer rm command
+  - navi             # interactive cheatsheet tool
+  
+  # File processing & utilities
+  - jq               # JSON processor
+  - yq               # YAML processor
+  - fx               # interactive JSON viewer
+  - httpie           # user-friendly curl replacement
+  - hyperfine        # command-line benchmarking
+  - lf               # terminal file manager
+  - watch            # run commands periodically
+  - p7zip            # 7zip archiver
+  - wireshark        # network analyzer
+  
+  # Development tools
+  - vim              # text editor
+  - neovim           # modern vim
+  - tmux             # terminal multiplexer
+  - gh               # GitHub CLI
+  - delta            # better git diff
+  
+  # Programming languages
+  - node             # JavaScript runtime
+  - python@3.12      # Python
+  - go               # Go language
+  
+  # Package managers
+  - nvm              # Node version manager
+  - pyenv            # Python version manager
+  
+  # Shell themes
+  - powerlevel10k    # Modern, fast zsh theme
+  
+  # Databases
+  - libpq            # PostgreSQL client tools (psql)
+  - sqlite           # SQLite database
+  
+  # DevOps & Cloud
+  - docker-compose   # multi-container Docker apps
+  - kubernetes-cli   # kubectl
+  - helm             # Kubernetes package manager
+  - awscli           # AWS CLI
+  
+  # System utilities
+  - mas              # Mac App Store CLI
 
-# Specific package overrides (add/remove specific packages)
-include_packages:
-  - fzf                    # Add specific packages not in categories
+# All GUI applications from Brewfile (remove the ones you don't want)
+applications:
+  # Development environments
+  - cursor           # AI-enhanced VS Code fork
+  - xcode            # Apple's development environment
+  - docker           # Docker Desktop
+  
+  # Terminals
+  - iterm2           # Advanced terminal for macOS
+  - warp             # AI-integrated modern terminal
+  
+  # API tools
+  - insomnia         # API client
+  - bruno            # Open-source API client
+  - bruno-cli        # Bruno CLI for CI/CD
+  
+  # Productivity
+  - raycast          # Modern launcher with AI integration
+  - rectangle        # Window management
+  - alt-tab          # Windows-style alt-tab
+  
+  # Browsers
+  - google-chrome    # Google Chrome browser
+  - microsoft-edge   # Microsoft Edge browser
+  
+  # Communication
+  - slack            # Team communication
+  - discord          # Community chat
+  - zoom             # Video conferencing
+  
+  # Password managers & security
+  - 1password        # Password manager with SSH key support
+  - 1password-cli    # 1Password command-line tool
+  
+  # Media
+  - vlc              # Media player
 
-exclude_packages:
-  - little-snitch          # Remove specific packages from categories
+# All fonts from Brewfile (remove the ones you don't want)
+fonts:
+  - font-fira-code-nerd-font      # FiraCode with Nerd Font icons
+  - font-jetbrains-mono-nerd-font # JetBrains Mono with icons
+  - font-cascadia-code            # Microsoft's coding font
+  - font-source-code-pro          # Adobe's coding font
+  - font-hack-nerd-font           # Hack font with icons
+  - font-inconsolata              # Monospace font
+  - font-roboto-mono-nerd-font    # Roboto Mono with icons
+  - font-cascadia-mono            # Cascadia Mono variant
+  - font-sf-mono                  # Apple's SF Mono font
 
-# Enterprise-specific settings
-enterprise:
-  skip_admin_tools: true   # Skip tools requiring admin rights
-  skip_network_tools: true # Skip network monitoring tools
-  skip_system_mods: true   # Skip macOS system modifications
-  use_user_space_only: true # Install only in user directories
+# Installation preferences
+preferences:
+  # Install dotfiles configurations
+  install_dotfiles: true
+  
+  # Terminal preference (for special configuration)
+  primary_terminal: iterm2  # iterm2, warp, or none
+  
+  # Launcher preference
+  primary_launcher: raycast  # raycast or none
 
-# AI tools configuration  
-ai_tools:
-  cursor: true            # Disable if company blocks AI IDEs
+# Enterprise-specific settings (uncomment if in corporate environment)
+# enterprise:
+#   skip_admin_tools: true     # Skip tools requiring admin rights
+#   skip_network_tools: true   # Skip network monitoring tools
+#   skip_system_mods: true     # Skip macOS system modifications
+#   use_user_space_only: true  # Install only in user directories
 
-# Terminal preferences (pick one as primary)
-terminal_preference: iterm2  # iterm2, warp, kitty, alacritty
-
-# Productivity launcher preference
-launcher_preference: raycast  # raycast or none
+# Usage Instructions:
+# 1. Copy this file: cp install-config.example.yml install-config.yml
+# 2. Edit install-config.yml and remove packages you don't want
+# 3. Run: make install-config

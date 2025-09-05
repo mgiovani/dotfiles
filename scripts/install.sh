@@ -212,6 +212,7 @@ post_install() {
     fi
 }
 
+
 # Main installation process
 main() {
     print_status "Starting dotfiles installation..."

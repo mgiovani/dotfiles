@@ -69,6 +69,9 @@ brew "go"               # Go language
 brew "nvm"              # Node version manager (alternative to manual install)
 brew "pyenv"            # Python version manager
 
+# Shell themes
+brew "powerlevel10k"    # Modern, fast zsh theme
+
 # ==================== DATABASES ====================
 brew "libpq"            # PostgreSQL client library and tools (psql)
 brew "sqlite"           # SQLite database

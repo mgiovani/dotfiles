@@ -110,7 +110,12 @@ set bell-style none
 # ==================== POWERLEVEL10K THEME ====================
 # Skip P10K in Warp since it provides its own prompt
 if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  source ~/powerlevel10k/powerlevel10k.zsh-theme
+  # Try brew-installed p10k first, then fallback to manually installed
+  if [[ -f "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+    source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
+  elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+    source ~/powerlevel10k/powerlevel10k.zsh-theme
+  fi
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 fi
