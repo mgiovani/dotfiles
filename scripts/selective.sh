@@ -19,6 +19,28 @@ print_header() {
     echo
 }
 
+# Check and install Homebrew if needed
+check_homebrew() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if ! command -v brew &> /dev/null; then
+            echo -e "${YELLOW}Homebrew not found. Installing Homebrew...${NC}"
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            
+            # Add Homebrew to PATH for Apple Silicon Macs
+            if [[ $(uname -m) == "arm64" ]]; then
+                echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+            else
+                echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+                eval "$(/usr/local/bin/brew shellenv)"
+            fi
+            echo -e "${GREEN}Homebrew installed successfully!${NC}"
+        else
+            echo -e "${GREEN}Homebrew already installed.${NC}"
+        fi
+    fi
+}
+
 show_menu() {
     echo -e "${BLUE}Choose what to install:${NC}"
     echo
@@ -74,13 +96,11 @@ install_interactive() {
         return 1
     fi
     
-    # Parse Brewfile to extract packages
-    local brew_packages=$(grep '^brew ' "$brewfile" | sed 's/brew "//' | sed 's/".*//' | tr '\n' ' ')
-    local cask_packages=$(grep '^cask ' "$brewfile" | sed 's/cask "//' | sed 's/".*//' | tr '\n' ' ')
-    local font_packages=$(echo "$cask_packages" | tr ' ' '\n' | grep '^font-' | tr '\n' ' ')
-    local app_packages=$(echo "$cask_packages" | tr ' ' '\n' | grep -v '^font-' | tr '\n' ' ')
+    # Parse Brewfile to extract packages with comments
+    local brew_lines=$(grep '^brew ' "$brewfile")
+    local cask_lines=$(grep '^cask ' "$brewfile")
     
-    echo -e "${BLUE}Found $(echo $brew_packages | wc -w) brew packages and $(echo $cask_packages | wc -w) cask packages in Brewfile${NC}"
+    echo -e "${BLUE}Found $(echo "$brew_lines" | wc -l) brew packages and $(echo "$cask_lines" | wc -l) cask packages in Brewfile${NC}"
     echo
     
     # Arrays to collect selected packages
@@ -88,33 +108,72 @@ install_interactive() {
     local selected_cask=()
     local install_dotfiles_flag=false
     
-    # Function to ask for each package
-    ask_packages() {
+    # Function to ask for each package with description
+    ask_brew_packages() {
+        echo -e "${BLUE}=== CLI Tools ===${NC}"
+        
+        while IFS= read -r line; do
+            if [[ -n "$line" ]]; then
+                local package=$(echo "$line" | sed 's/brew "//' | sed 's/".*//')
+                local comment=$(echo "$line" | grep -o '#.*' | sed 's/^# *//' || echo "")
+                
+                if [[ -n "$comment" ]]; then
+                    echo -e "${YELLOW}$package${NC} - $comment"
+                    read -n 1 -p "Install? [y/N]: " answer
+                else
+                    read -n 1 -p "Install $package? [y/N]: " answer
+                fi
+                echo
+                
+                if [[ $answer =~ ^[Yy]$ ]]; then
+                    selected_brew+=("$package")
+                    echo -e "${GREEN}✓ Added $package${NC}"
+                fi
+            fi
+        done <<< "$brew_lines"
+        echo
+    }
+    
+    # Function to ask for cask packages with description  
+    ask_cask_packages() {
         local category="$1"
-        local packages="$2"
-        local package_type="$3"
+        local filter="$2"
         
         echo -e "${BLUE}=== $category ===${NC}"
         
-        for package in $packages; do
-            read -n 1 -p "Install $package? [y/N]: " answer
-            echo
-            if [[ $answer =~ ^[Yy]$ ]]; then
-                if [[ $package_type == "brew" ]]; then
-                    selected_brew+=("$package")
-                else
-                    selected_cask+=("$package")
+        while IFS= read -r line; do
+            if [[ -n "$line" ]]; then
+                local package=$(echo "$line" | sed 's/cask "//' | sed 's/".*//')
+                local comment=$(echo "$line" | grep -o '#.*' | sed 's/^# *//' || echo "")
+                
+                # Apply filter
+                if [[ "$filter" == "font" && ! "$package" =~ ^font- ]]; then
+                    continue
+                elif [[ "$filter" == "app" && "$package" =~ ^font- ]]; then
+                    continue
                 fi
-                echo -e "${GREEN}✓ Added $package to installation list${NC}"
+                
+                if [[ -n "$comment" ]]; then
+                    echo -e "${YELLOW}$package${NC} - $comment"
+                    read -n 1 -p "Install? [y/N]: " answer
+                else
+                    read -n 1 -p "Install $package? [y/N]: " answer
+                fi
+                echo
+                
+                if [[ $answer =~ ^[Yy]$ ]]; then
+                    selected_cask+=("$package")
+                    echo -e "${GREEN}✓ Added $package${NC}"
+                fi
             fi
-        done
+        done <<< "$cask_lines"
         echo
     }
     
     # Ask for each category from Brewfile
-    ask_packages "CLI Tools" "$brew_packages" "brew"
-    ask_packages "Applications" "$app_packages" "cask"
-    ask_packages "Fonts" "$font_packages" "cask"
+    ask_brew_packages
+    ask_cask_packages "Applications" "app"
+    ask_cask_packages "Fonts" "font"
     
     # Ask about dotfiles
     read -n 1 -p "Install dotfiles configurations? [y/N]: " answer
@@ -175,6 +234,7 @@ install_interactive() {
 
 main() {
     print_header
+    check_homebrew
     
     while true; do
         show_menu

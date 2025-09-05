@@ -52,9 +52,20 @@ check_stow() {
             if command -v brew &> /dev/null; then
                 brew install stow
             else
-                print_error "Homebrew is not installed. Please install Homebrew first:"
-                print_status "/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
-                exit 1
+                print_status "Homebrew not found. Installing Homebrew..."
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+                
+                # Add Homebrew to PATH for Apple Silicon Macs
+                if [[ $(uname -m) == "arm64" ]]; then
+                    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+                    eval "$(/opt/homebrew/bin/brew shellenv)"
+                else
+                    echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+                    eval "$(/usr/local/bin/brew shellenv)"
+                fi
+                
+                print_success "Homebrew installed successfully!"
+                brew install stow
             fi
         elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
             if command -v apt &> /dev/null; then
