@@ -1,0 +1,42 @@
+[user]
+    email = your-email@example.com
+    name = Your Name
+[core]
+    editor = vim
+    pager = delta
+[diff]
+    tool = vimdiff
+    colorMoved = default
+[alias]
+    slog = log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[color]
+    ui = true
+[delta]
+    navigate = true
+    line-numbers = true
+    syntax-theme = base16
+    side-by-side = true
+    features = decorations
+    
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = yellow box
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+[interactive]
+    diffFilter = delta --color-only
+[gpg]
+    program = gpg
+[commit]
+    gpgsign = true
+[mergetool "vimdiff"]
+    cmd = vim -d "$LOCAL" "$MERGED" "$REMOTE"
+[push]
+    default = simple
+[grep]
+    break = true
+    heading = true
+    lineNumber = true

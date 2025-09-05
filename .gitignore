@@ -1,0 +1,125 @@
+# Dotfiles .gitignore
+# Prevent sensitive information from being committed
+
+# ==================== SENSITIVE FILES ====================
+# Never commit these files as they may contain sensitive information
+.netrc
+.ssh/
+.aws/
+.docker/config.json
+.npm/
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ==================== CACHE AND TEMPORARY FILES ====================
+# Vim
+.viminfo
+.vim/sessions/
+.vim/swaps/
+.vim/undo/
+.vim/.netrwhist
+.vim/plugged/*/doc/tags
+
+# Zsh
+.zsh_history
+.zsh_sessions/
+.zcompdump*
+.zinit/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.nfs*
+
+# ==================== LOGS ====================
+*.log
+logs/
+
+# ==================== PERSONAL CONFIGURATION ====================
+# Allow users to have personal overrides without committing them
+*_local
+*_personal
+*.local
+*.personal
+
+# Powerlevel10k configuration (highly personal)
+# Comment out the line below if you want to share your p10k config
+# zsh/.p10k.zsh
+
+# Personal aliases
+# Comment out if you want to share your personal aliases
+# zsh/.zsh_aliases_personal
+
+# ==================== IDE AND EDITOR FILES ====================
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ==================== BACKUP FILES ====================
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# ==================== ENVIRONMENT SPECIFIC ====================
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Project specific configs that shouldn't be in dotfiles
+.project/
+.workspace/
+
+# ==================== OTHER ====================
+# Compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Node modules
+node_modules/
+
+# Package lock files (these can vary by machine)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

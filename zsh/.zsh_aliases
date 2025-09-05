@@ -1,0 +1,164 @@
+# ==================== ZSH ALIASES ====================
+# Organized aliases for better maintainability
+
+# ==================== CONFIGURATION ====================
+alias zshconfig="vim ~/.zshrc"
+alias aliasconfig="vim ~/.zsh_aliases"
+alias rf="source ~/.zshrc"
+
+# ==================== BASIC SYSTEM ALIASES ====================
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# ==================== MODERN CLI TOOL ALIASES ====================
+# Use modern replacements if available, fallback to traditional tools
+if command -v eza &> /dev/null; then
+  alias ls='eza --icons'
+  alias ll='eza -la --git --icons'
+  alias la='eza -la --git --icons'
+  alias tree='eza --tree --icons'
+fi
+
+if command -v bat &> /dev/null; then
+  alias cat='bat --style=auto'
+  alias less='bat --style=auto'
+fi
+
+if command -v rg &> /dev/null; then
+  alias grep='rg --color=always'
+  alias search='rg'
+fi
+
+if command -v fd &> /dev/null; then
+  alias find='fd'
+fi
+
+if command -v dust &> /dev/null; then
+  alias du='dust'
+fi
+
+if command -v duf &> /dev/null; then
+  alias df='duf'
+fi
+
+if command -v procs &> /dev/null; then
+  alias ps='procs'
+fi
+
+if command -v bottom &> /dev/null; then
+  alias htop='btm'
+  alias top='btm'
+fi
+
+# Modern git with delta (configured in .gitconfig)
+alias gd='git diff'
+alias gshow='git show'
+
+# ==================== GIT ALIASES ====================
+alias gst='git status'
+alias gco='git checkout'
+alias gcm='git checkout main || git checkout master'
+alias gp='git push'
+alias gl='git pull'
+alias glog='git log --oneline --graph --decorate'
+alias update="git fetch --all --prune && git merge"
+
+# ==================== DOCKER ALIASES ====================
+# Only add if Docker is installed
+if command -v docker >/dev/null 2>&1; then
+  alias dps='docker ps'
+  alias dpsa='docker ps -a'
+  alias di='docker images'
+  alias dex='docker exec -it'
+fi
+
+# ==================== PYTHON/DEVELOPMENT ALIASES ====================
+# Conditional aliases for pyenv
+if command -v pyenv 1>/dev/null 2>&1; then
+  alias python="$(pyenv which python)"
+  alias pip="$(pyenv which pip)"
+fi
+
+# ==================== UTILITY FUNCTIONS ====================
+# Make directory and cd into it
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# Quick way to find and kill processes
+killport() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: killport <port>"
+    return 1
+  fi
+  lsof -ti:$1 | xargs kill -9
+}
+
+# Extract various archive formats
+extract() {
+  if [ -f $1 ]; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1     ;;
+      *.tar.gz)    tar xzf $1     ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar e $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xf $1      ;;
+      *.tbz2)      tar xjf $1     ;;
+      *.tgz)       tar xzf $1     ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)     echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Quick server for current directory
+serve() {
+  local port=${1:-8000}
+  python3 -m http.server $port
+}
+
+# Find files and directories quickly
+ff() {
+  if command -v fd &> /dev/null; then
+    fd --type f "$1"
+  else
+    find . -type f -iname "*$1*"
+  fi
+}
+fdir() {
+  if command -v fd &> /dev/null; then
+    fd --type d "$1"
+  else
+    find . -type d -iname "*$1*"
+  fi
+}
+
+# ==================== TMUX ALIASES ====================
+if command -v tmux >/dev/null 2>&1; then
+  alias tls='tmux list-sessions'
+  alias ta='tmux attach-session -t'
+  alias tn='tmux new-session -s'
+fi
+
+# ==================== OPTIONAL OVERRIDES ====================
+# Uncomment if you want to use neovim instead of vim
+# alias vim="nvim"
+
+# Uncomment for WSL-specific clipboard aliases
+# alias pbcopy='clip.exe'
+# alias pbpaste='powershell.exe -command "Get-Clipboard" | head -n -1'
+
+# ==================== PROJECT-SPECIFIC ALIASES ====================
+# Add your project-specific aliases here
+# Example:
+# alias myproject="cd ~/projects/myproject"
+# alias startdev="cd ~/projects/myproject && npm run dev"

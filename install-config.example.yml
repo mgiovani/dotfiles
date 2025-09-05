@@ -1,0 +1,43 @@
+# Installation Configuration File
+# Copy this to install-config.yml and customize
+
+# Installation mode (enterprise, minimal, full, custom)
+mode: custom
+
+# Categories to install (comment out what you don't want)
+categories:
+  essential: true          # curl, wget, git, openssh, gnupg, stow
+  modern_cli: true         # ripgrep, fzf, fd, bat, eza, etc.
+  dev_tools: true          # vim, tmux, node, python, go, rust, databases
+  ai_tools: true           # cursor (disable if company blocks AI)
+  terminals: true          # iterm2, warp
+  productivity: true       # raycast, rectangle, system utilities
+  security: false          # 1password, little-snitch (may conflict with corporate)
+  browsers: true           # chrome, firefox, brave, orion
+  media: false             # vlc, figma, design tools
+  system: true             # mas, cleanmymac, system utilities
+  fonts: true              # nerd fonts for better terminal experience
+
+# Specific package overrides (add/remove specific packages)
+include_packages:
+  - fzf                    # Add specific packages not in categories
+
+exclude_packages:
+  - little-snitch          # Remove specific packages from categories
+
+# Enterprise-specific settings
+enterprise:
+  skip_admin_tools: true   # Skip tools requiring admin rights
+  skip_network_tools: true # Skip network monitoring tools
+  skip_system_mods: true   # Skip macOS system modifications
+  use_user_space_only: true # Install only in user directories
+
+# AI tools configuration  
+ai_tools:
+  cursor: true            # Disable if company blocks AI IDEs
+
+# Terminal preferences (pick one as primary)
+terminal_preference: iterm2  # iterm2, warp, kitty, alacritty
+
+# Productivity launcher preference
+launcher_preference: raycast  # raycast or none

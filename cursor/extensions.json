@@ -1,0 +1,44 @@
+{
+  "recommendations": [
+    // ==================== ESSENTIAL VIM EXTENSION ====================
+    "vscodevim.vim",
+    
+    // ==================== BASE16 THEME SUPPORT ====================
+    "chriskempson.base16-themes",
+    
+    // ==================== PROGRAMMING LANGUAGE SUPPORT ====================
+    // Python
+    "charliermarsh.ruff",
+    "ms-python.python",
+    
+    // JavaScript/TypeScript
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    
+    // Go
+    "golang.go",
+    
+    // Rust
+    "rust-lang.rust-analyzer",
+    
+    // ==================== DEVELOPMENT TOOLS ====================
+    "eamodio.gitlens",
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode.remote-repositories",
+    
+    // ==================== UTILITY EXTENSIONS ====================
+    "pkief.material-icon-theme",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "streetsidesoftware.code-spell-checker",
+    "editorconfig.editorconfig",
+    
+    // ==================== OPTIONAL PRODUCTIVITY ====================
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.hexeditor"
+  ]
+}
