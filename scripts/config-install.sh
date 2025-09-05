@@ -150,6 +150,16 @@ install_shell_deps() {
     else
         print_success "Powerlevel10k already installed"
     fi
+    
+    # Install Base16 Shell themes
+    if [[ ! -d "$HOME/.config/base16-shell" ]]; then
+        print_status "Installing Base16 Shell themes..."
+        mkdir -p "$HOME/.config"
+        git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+        print_success "Base16 Shell installed"
+    else
+        print_success "Base16 Shell already installed"
+    fi
 }
 
 

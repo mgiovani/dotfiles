@@ -248,6 +248,20 @@ install_powerlevel10k() {
     fi
 }
 
+# Install Base16 Shell themes
+install_base16_shell() {
+    print_status "Installing Base16 Shell themes..."
+    
+    if [[ ! -d "$HOME/.config/base16-shell" ]]; then
+        print_status "Cloning Base16 Shell repository..."
+        mkdir -p "$HOME/.config"
+        git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+        print_success "Base16 Shell installed successfully"
+    else
+        print_success "Base16 Shell already installed"
+    fi
+}
+
 # Main installation process
 main() {
     print_status "Starting dotfiles installation..."
@@ -266,6 +280,7 @@ main() {
     install_dotfiles
     install_oh_my_zsh
     install_powerlevel10k
+    install_base16_shell
     post_install
     
     print_success "Dotfiles installation completed!"
@@ -273,7 +288,8 @@ main() {
     print_status "  1. Restart your terminal or run 'source ~/.zshrc'"
     print_status "  2. Install vim plugins by running ':PlugInstall' in vim"
     print_status "  3. Configure Powerlevel10k by running 'p10k configure' (optional)"
-    print_status "  4. Configure any tool-specific settings as needed"
+    print_status "  4. Change terminal theme by running 'base16_default-dark' or other base16 themes"
+    print_status "  5. Configure any tool-specific settings as needed"
 }
 
 # Allow script to be sourced for testing

@@ -106,6 +106,16 @@ install_powerlevel10k() {
     fi
 }
 
+install_base16_shell() {
+    echo -e "${GREEN}Installing Base16 Shell themes...${NC}"
+    if [[ ! -d "$HOME/.config/base16-shell" ]]; then
+        mkdir -p "$HOME/.config"
+        git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+        echo -e "${GREEN}✓ Base16 Shell installed${NC}"
+    else
+        echo -e "${GREEN}✓ Base16 Shell already installed${NC}"
+    fi
+}
 
 install_interactive() {
     echo -e "${GREEN}Interactive installation - choose each package individually${NC}"
@@ -254,6 +264,7 @@ install_interactive() {
         install_dotfiles
         install_oh_my_zsh
         install_powerlevel10k
+        install_base16_shell
     fi
     
     echo -e "${GREEN}Interactive installation completed!${NC}"
@@ -290,12 +301,14 @@ main() {
                 install_dotfiles
                 install_oh_my_zsh
                 install_powerlevel10k
+                install_base16_shell
                 break
                 ;;
             6)
                 install_dotfiles
                 install_oh_my_zsh
                 install_powerlevel10k
+                install_base16_shell
                 break
                 ;;
             7)
