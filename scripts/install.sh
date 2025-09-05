@@ -212,6 +212,41 @@ post_install() {
     fi
 }
 
+# Install Oh My Zsh
+install_oh_my_zsh() {
+    print_status "Installing Oh My Zsh..."
+    
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        print_status "Installing Oh My Zsh..."
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        print_success "Oh My Zsh installed successfully"
+    else
+        print_success "Oh My Zsh already installed"
+    fi
+}
+
+# Install Powerlevel10k theme
+install_powerlevel10k() {
+    print_status "Setting up Powerlevel10k theme..."
+    
+    # If brew installed p10k, we're done
+    if brew list powerlevel10k &> /dev/null; then
+        print_success "Powerlevel10k installed via Homebrew"
+    elif [[ ! -d "$HOME/powerlevel10k" ]]; then
+        print_status "Installing Powerlevel10k via git clone..."
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        print_success "Powerlevel10k installed successfully"
+    else
+        print_success "Powerlevel10k already installed"
+    fi
+    
+    # Ensure p10k config exists
+    if [[ ! -f "$HOME/.p10k.zsh" ]] && [[ -f "$DOTFILES_DIR/zsh/.p10k.zsh" ]]; then
+        print_status "Setting up Powerlevel10k configuration..."
+        # This will be handled by stow, but let's mention it
+        print_status "Powerlevel10k configuration will be linked via dotfiles"
+    fi
+}
 
 # Main installation process
 main() {
@@ -229,13 +264,16 @@ main() {
     check_stow
     backup_existing
     install_dotfiles
+    install_oh_my_zsh
+    install_powerlevel10k
     post_install
     
     print_success "Dotfiles installation completed!"
     print_status "You may need to:"
     print_status "  1. Restart your terminal or run 'source ~/.zshrc'"
     print_status "  2. Install vim plugins by running ':PlugInstall' in vim"
-    print_status "  3. Configure any tool-specific settings as needed"
+    print_status "  3. Configure Powerlevel10k by running 'p10k configure' (optional)"
+    print_status "  4. Configure any tool-specific settings as needed"
 }
 
 # Allow script to be sourced for testing

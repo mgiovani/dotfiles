@@ -82,6 +82,30 @@ install_dotfiles() {
     "$SCRIPT_DIR/install.sh"
 }
 
+install_oh_my_zsh() {
+    echo -e "${GREEN}Installing Oh My Zsh...${NC}"
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        echo -e "${GREEN}✓ Oh My Zsh installed${NC}"
+    else
+        echo -e "${GREEN}✓ Oh My Zsh already installed${NC}"
+    fi
+}
+
+install_powerlevel10k() {
+    echo -e "${GREEN}Installing Powerlevel10k theme...${NC}"
+    
+    # If brew installed p10k, we're done
+    if brew list powerlevel10k &> /dev/null; then
+        echo -e "${GREEN}✓ Powerlevel10k installed via Homebrew${NC}"
+    elif [[ ! -d "$HOME/powerlevel10k" ]]; then
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        echo -e "${GREEN}✓ Powerlevel10k installed${NC}"
+    else
+        echo -e "${GREEN}✓ Powerlevel10k already installed${NC}"
+    fi
+}
+
 
 install_interactive() {
     echo -e "${GREEN}Interactive installation - choose each package individually${NC}"
@@ -228,6 +252,8 @@ install_interactive() {
     # Install dotfiles
     if [[ $install_dotfiles_flag == true ]]; then
         install_dotfiles
+        install_oh_my_zsh
+        install_powerlevel10k
     fi
     
     echo -e "${GREEN}Interactive installation completed!${NC}"
@@ -262,10 +288,14 @@ main() {
                 install_dev_tools
                 install_applications
                 install_dotfiles
+                install_oh_my_zsh
+                install_powerlevel10k
                 break
                 ;;
             6)
                 install_dotfiles
+                install_oh_my_zsh
+                install_powerlevel10k
                 break
                 ;;
             7)

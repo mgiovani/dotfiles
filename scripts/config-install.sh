@@ -127,6 +127,31 @@ install_dotfiles() {
     fi
 }
 
+# Install shell dependencies
+install_shell_deps() {
+    print_status "Installing shell dependencies..."
+    
+    # Install Oh My Zsh
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        print_status "Installing Oh My Zsh..."
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        print_success "Oh My Zsh installed"
+    else
+        print_success "Oh My Zsh already installed"
+    fi
+    
+    # Install/Setup Powerlevel10k
+    if brew list powerlevel10k &> /dev/null; then
+        print_success "Powerlevel10k installed via Homebrew"
+    elif [[ ! -d "$HOME/powerlevel10k" ]]; then
+        print_status "Installing Powerlevel10k via git clone..."
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        print_success "Powerlevel10k installed"
+    else
+        print_success "Powerlevel10k already installed"
+    fi
+}
+
 
 # Main installation function
 main() {
@@ -138,6 +163,9 @@ main() {
     install_packages "brew" "cli_tools"
     install_packages "cask" "applications" 
     install_packages "cask" "fonts"
+    
+    # Install shell dependencies
+    install_shell_deps
     
     # Install dotfiles if enabled
     install_dotfiles
