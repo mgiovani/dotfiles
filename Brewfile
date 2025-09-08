@@ -99,8 +99,8 @@ cask "warp"             # AI-integrated terminal with modern UX
 
 # API tools
 cask "insomnia"
-cask "bruno"            # Open-source API client
-brew "bruno-cli"        # Bruno CLI for CI/CD
+cask "bruno"            # Open-source API client GUI
+brew "bruno-cli"        # Bruno CLI for CI/CD and command-line API testing
 
 # AI Development Tools & Extensions
 # Note: GitHub Copilot, Cursor AI, and other AI tools are integrated within IDEs

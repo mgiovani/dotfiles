@@ -54,6 +54,23 @@ if command -v bottom &> /dev/null; then
   alias top='btm'
 fi
 
+if command -v trash &> /dev/null; then
+  alias rm='trash'
+fi
+
+if command -v hyperfine &> /dev/null; then
+  alias time='hyperfine'
+fi
+
+# Zoxide shortcuts (smart cd with frecency)
+if command -v zoxide &> /dev/null; then
+  alias z='zoxide'
+  alias zi='zoxide query -i'  # interactive selection
+  
+  # Uncomment to replace cd with zoxide (use with caution)
+  # alias cd='z'
+fi
+
 # Modern git with delta (configured in .gitconfig)
 alias gd='git diff'
 alias gshow='git show'

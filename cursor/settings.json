@@ -11,40 +11,6 @@
       "after": ["<Esc>"]
     }
   ],
-  "vim.normalModeKeyBindingsNonRecursive": [
-    {
-      "before": ["<leader>", "d"],
-      "after": ["d", "d"]
-    },
-    {
-      "before": ["<C-n>"],
-      "commands": [":nohl"]
-    },
-    {
-      "before": ["K"],
-      "commands": ["editor.action.showHover"]
-    },
-    {
-      "before": ["<leader>", "c", "a"],
-      "commands": ["editor.action.quickFix"]
-    },
-    {
-      "before": ["<leader>", "f"],
-      "commands": ["editor.action.formatDocument"]
-    },
-    {
-      "before": ["<leader>", "r", "n"],
-      "commands": ["editor.action.rename"]
-    },
-    {
-      "before": ["g", "d"],
-      "commands": ["editor.action.revealDefinition"]
-    },
-    {
-      "before": ["g", "r"],
-      "commands": ["editor.action.goToReferences"]
-    }
-  ],
   "vim.visualModeKeyBindings": [
     {
       "before": [">"],
@@ -55,7 +21,6 @@
       "commands": ["editor.action.outdentLines"]
     }
   ],
-  "vim.leader": "<space>",
   "vim.handleKeys": {
     "<C-a>": false,
     "<C-f>": false,
@@ -68,18 +33,14 @@
 
   // ==================== EDITOR SETTINGS ====================
   "editor.lineNumbers": "relative",
-  "editor.cursorBlinking": "solid",
-  "editor.cursorStyle": "block",
   "editor.cursorSurroundingLines": 8,
   "editor.scrollBeyondLastLine": false,
-  "editor.minimap.enabled": false,
   "editor.wordWrap": "off",
   "editor.renderWhitespace": "boundary",
-  "editor.rulers": [80, 120],
-  "editor.fontFamily": "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Monaco, 'Courier New', monospace",
-  "editor.fontSize": 14,
-  "editor.fontLigatures": true,
-  "editor.tabSize": 2,
+  "editor.rulers": [
+    80,
+    120
+  ],
   "editor.insertSpaces": true,
   "editor.detectIndentation": true,
   "editor.trimAutoWhitespace": true,
@@ -92,21 +53,9 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   "editor.inlineSuggest.enabled": true,
-  "editor.quickSuggestions": {
-    "other": true,
-    "comments": false,
-    "strings": false
-  },
-
-  // ==================== WORKBENCH SETTINGS ====================
-  "workbench.colorTheme": "Base16 Dark (base16)",
-  "workbench.iconTheme": "material-icon-theme",
-  "workbench.activityBar.location": "side",
   "workbench.sideBar.location": "left",
   "workbench.panel.defaultLocation": "bottom",
-  "workbench.startupEditor": "none",
-  "workbench.editor.enablePreview": false,
-  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.startupEditor": "terminal",
   "workbench.editor.closeOnFileDelete": true,
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.value": 10,
@@ -149,9 +98,6 @@
   },
   "search.useIgnoreFiles": true,
   "search.smartCase": true,
-
-  // ==================== FILES SETTINGS ====================
-  "files.autoSave": "onFocusChange",
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
@@ -173,10 +119,9 @@
   },
 
   // ==================== GIT SETTINGS ====================
-  "git.autofetch": true,
+  "git.autofetch": "all",
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
-  "git.autofetchPeriod": 180,
   "git.decorations.enabled": true,
 
   // ==================== EXTENSIONS SETTINGS ====================
@@ -246,11 +191,45 @@
   "cursor.cpp.enableClangd": true,
   "cursor.general.enableCodeActions": true,
   "cursor.chat.alwaysNewSession": false,
-  
+
   // ==================== PERFORMANCE SETTINGS ====================
   "typescript.disableAutomaticTypeAcquisition": true,
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "search.followSymlinks": false,
   "search.maintainFileSearchCache": true,
-  "search.collapseResults": "alwaysCollapse"
+  "search.collapseResults": "alwaysCollapse",
+
+  // ==================== YAML SCHEMAS ====================
+  "yaml.schemas": {
+    "file:///Users/giovani.moutinho/.cursor/extensions/atlassian.atlascode-3.8.15-universal/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+  },
+  "window.newWindowProfile": "Default",
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "cursor.composer.queueMessageDefaultBehavior": "queue",
+  "cursor.composer.usageSummaryDisplay": "always",
+  "cursor.composer.shouldAllowCustomModes": true,
+  "cursor.diffs.useCharacterLevelDiffs": true,
+  "cursor.cpp.enablePartialAccepts": true,
+  "update.releaseTrack": "prerelease",
+  "cursor.cpp.disabledLanguages": [],
+  "cursor.general.enableShadowWorkspace": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.experimentalGpuAcceleration": "on",
+  "editor.linkedEditing": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  "diffEditor.codeLens": true,
+  "diffEditor.experimental.showMoves": true,
+  "diffEditor.experimental.useTrueInlineView": true,
+  "workbench.commandPalette.experimental.suggestCommands": true,
+  "workbench.experimental.cloudChanges.autoStore": "onShutdown",
+  "workbench.experimental.cloudChanges.partialMatches.enabled": true,
+  "workbench.externalBrowser": "edge",
+  "workbench.activityBar.orientation": "vertical",
+  "vim.vimrc.enable": true,
+  "vim.vimrc.path": "$HOME/.vimrc",
+  "ruff.configurationPreference": "filesystemFirst",
+  "remote.tunnels.alwaysUpdateCLI": true,
+  "git.autofetchPeriod": 1800,
+  "github.gitProtocol": "ssh",
+  "makefile.configureOnOpen": true
 }

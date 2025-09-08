@@ -1,6 +1,6 @@
 [user]
-    email = your-email@example.com
-    name = Your Name
+    email = e@mgiovani.dev
+    name = Giovani Moutinho
 [core]
     editor = vim
     pager = delta
@@ -15,7 +15,7 @@
     # Dark terminal optimized settings for better readability
     navigate = true
     line-numbers = true
-    syntax-theme = OneHalfDark
+    syntax-theme = base16
     side-by-side = false
     features = decorations line-numbers
     
@@ -32,11 +32,11 @@
     file-decoration-style = "#606060"
     
     # Line numbers: muted colors that don't distract
-    line-numbers-left-style = "#606060"
-    line-numbers-right-style = "#606060"
-    line-numbers-minus-style = "#d75f87"  # Pink for deleted
-    line-numbers-plus-style = "#87d787"   # Green for added  
-    line-numbers-zero-style = "#606060"   # Gray for unchanged
+    #line-numbers-left-style = "#606060"
+    #line-numbers-right-style = "#606060"
+    #line-numbers-minus-style = "#d75f87"  # Pink for deleted
+    #line-numbers-plus-style = "#87d787"   # Green for added  
+    #line-numbers-zero-style = "#606060"   # Gray for unchanged
     
     # Alternative syntax themes for different preferences:
     # Uncomment one of these lines to try different themes:
@@ -52,13 +52,13 @@
     hunk-header-decoration-style = "#87ceeb box"
 [merge]
     tool = vimdiff
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 [interactive]
     diffFilter = delta --color-only
 [gpg]
     program = gpg
 [commit]
-    gpgsign = true
+    gpgsign = false
 [mergetool "vimdiff"]
     cmd = vim -d "$LOCAL" "$MERGED" "$REMOTE"
 [push]

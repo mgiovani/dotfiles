@@ -198,3 +198,8 @@ zsh-defer -a [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
   zsh-defer -a [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 fi
+
+# Zoxide integration - lazy load for better performance
+if command -v zoxide >/dev/null 2>&1; then
+  zsh-defer -a eval "$(zoxide init zsh)"
+fi

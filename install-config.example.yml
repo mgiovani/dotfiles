@@ -41,7 +41,6 @@ cli_tools:
   - lf               # terminal file manager
   - watch            # run commands periodically
   - p7zip            # 7zip archiver
-  - wireshark        # network analyzer
   
   # Development tools
   - vim              # text editor
@@ -53,7 +52,6 @@ cli_tools:
   # Programming languages
   - node             # JavaScript runtime
   - python@3.12      # Python
-  - go               # Go language
   
   # Package managers
   - nvm              # Node version manager
@@ -64,7 +62,6 @@ cli_tools:
   
   # Databases
   - libpq            # PostgreSQL client tools (psql)
-  - sqlite           # SQLite database
   
   # DevOps & Cloud
   - docker-compose   # multi-container Docker apps
@@ -84,7 +81,6 @@ applications:
   
   # Terminals
   - iterm2           # Advanced terminal for macOS
-  - warp             # AI-integrated modern terminal
   
   # API tools
   - insomnia         # API client
@@ -93,21 +89,13 @@ applications:
   
   # Productivity
   - raycast          # Modern launcher with AI integration
-  - rectangle        # Window management
   - alt-tab          # Windows-style alt-tab
   
   # Browsers
-  - google-chrome    # Google Chrome browser
   - microsoft-edge   # Microsoft Edge browser
   
   # Communication
   - slack            # Team communication
-  - discord          # Community chat
-  - zoom             # Video conferencing
-  
-  # Password managers & security
-  - 1password        # Password manager with SSH key support
-  - 1password-cli    # 1Password command-line tool
   
   # Media
   - vlc              # Media player

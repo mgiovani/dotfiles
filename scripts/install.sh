@@ -144,14 +144,40 @@ install_dotfiles() {
         CURSOR_CONFIG_DIR="$HOME/Library/Application Support/Cursor/User"
         mkdir -p "$CURSOR_CONFIG_DIR"
         
+        # Symlink Cursor settings.json
         if [[ -f "$DOTFILES_DIR/cursor/settings.json" ]]; then
-            cp "$DOTFILES_DIR/cursor/settings.json" "$CURSOR_CONFIG_DIR/settings.json"
-            print_success "Cursor settings installed."
+            target_file="$CURSOR_CONFIG_DIR/settings.json"
+            
+            # Backup existing config before symlinking
+            if [[ -f "$target_file" && ! -L "$target_file" ]]; then
+                backup_file="$target_file.backup.$(date +%Y%m%d_%H%M%S)"
+                mv "$target_file" "$backup_file"
+                print_warning "Existing Cursor settings backed up to: $backup_file"
+            elif [[ -L "$target_file" ]]; then
+                rm "$target_file"
+                print_info "Removed existing Cursor settings symlink."
+            fi
+            
+            ln -s "$DOTFILES_DIR/cursor/settings.json" "$target_file"
+            print_success "Cursor settings symlinked."
         fi
         
+        # Symlink Cursor extensions.json
         if [[ -f "$DOTFILES_DIR/cursor/extensions.json" ]]; then
-            cp "$DOTFILES_DIR/cursor/extensions.json" "$CURSOR_CONFIG_DIR/extensions.json"
-            print_success "Cursor extensions list installed."
+            target_file="$CURSOR_CONFIG_DIR/extensions.json"
+            
+            # Backup existing extensions.json before symlinking
+            if [[ -f "$target_file" && ! -L "$target_file" ]]; then
+                backup_file="$target_file.backup.$(date +%Y%m%d_%H%M%S)"
+                mv "$target_file" "$backup_file"
+                print_warning "Existing Cursor extensions list backed up to: $backup_file"
+            elif [[ -L "$target_file" ]]; then
+                rm "$target_file"
+                print_info "Removed existing Cursor extensions symlink."
+            fi
+            
+            ln -s "$DOTFILES_DIR/cursor/extensions.json" "$target_file"
+            print_success "Cursor extensions list symlinked."
         fi
         
         print_warning "Install Cursor extensions manually or use: cursor --install-extension vscodevim.vim"

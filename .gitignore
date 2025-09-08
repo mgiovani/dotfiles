@@ -69,6 +69,9 @@ logs/
 *.local
 *.personal
 
+# Installation configuration (contains personal settings)
+install-config.yml
+
 # Powerlevel10k configuration (highly personal)
 # Comment out the line below if you want to share your p10k config
 # zsh/.p10k.zsh
