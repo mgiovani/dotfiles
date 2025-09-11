@@ -53,9 +53,13 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   "editor.inlineSuggest.enabled": true,
+  "editor.stickyScroll.enabled": true,
+  "editor.smoothScrolling": true,
   "workbench.sideBar.location": "left",
   "workbench.panel.defaultLocation": "bottom",
   "workbench.startupEditor": "terminal",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editor.enablePreview": false,
   "workbench.editor.closeOnFileDelete": true,
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.value": 10,
@@ -69,6 +73,8 @@
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.rightClickBehavior": "paste",
   "terminal.integrated.shell.osx": "/bin/zsh",
+  "terminal.integrated.enablePersistentSessions": true,
+  "terminal.integrated.scrollback": 10000,
   "terminal.integrated.profiles.osx": {
     "zsh": {
       "path": "/bin/zsh",
@@ -123,10 +129,13 @@
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
   "git.decorations.enabled": true,
+  "git.pruneOnFetch": true,
+  "git.openRepositoryInParentFolders": "always",
 
   // ==================== EXTENSIONS SETTINGS ====================
   "extensions.autoUpdate": false,
   "extensions.ignoreRecommendations": false,
+  "telemetry.telemetryLevel": "off",
 
   // ==================== LANGUAGE SPECIFIC SETTINGS ====================
   // Python
@@ -200,7 +209,10 @@
   "search.collapseResults": "alwaysCollapse",
 
   // ==================== YAML SCHEMAS ====================
+  "yaml.schemaStore.enable": true,
   "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*",
+    "https://json.schemastore.org/docker-compose.json": "docker-compose*.yml",
     "file:///Users/giovani.moutinho/.cursor/extensions/atlassian.atlascode-3.8.15-universal/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
   "window.newWindowProfile": "Default",
@@ -230,6 +242,9 @@
   "ruff.configurationPreference": "filesystemFirst",
   "remote.tunnels.alwaysUpdateCLI": true,
   "git.autofetchPeriod": 1800,
+  "prettier.requireConfig": true,
+  "eslint.workingDirectories": "auto",
+  "typescript.tsserver.maxTsServerMemory": 4096,
   "github.gitProtocol": "ssh",
   "makefile.configureOnOpen": true
 }

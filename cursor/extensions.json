@@ -10,6 +10,7 @@
     // Python
     "charliermarsh.ruff",
     "ms-python.python",
+    "ms-python.vscode-pylance",
     
     // JavaScript/TypeScript
     "esbenp.prettier-vscode",
@@ -28,6 +29,8 @@
     "redhat.vscode-yaml",
     "ms-vscode-remote.remote-ssh",
     "ms-vscode.remote-repositories",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode.makefile-tools",
     
     // ==================== UTILITY EXTENSIONS ====================
     "pkief.material-icon-theme",
@@ -35,10 +38,10 @@
     "formulahendry.auto-rename-tag",
     "streetsidesoftware.code-spell-checker",
     "editorconfig.editorconfig",
+    "usernamehw.errorlens",
     
     // ==================== OPTIONAL PRODUCTIVITY ====================
     "ms-vscode.vscode-typescript-next",
-    "bradlc.vscode-tailwindcss",
     "ms-vscode.hexeditor"
   ]
 }

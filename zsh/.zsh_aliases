@@ -96,7 +96,7 @@ fi
 # ==================== PYTHON/DEVELOPMENT ALIASES ====================
 # Conditional aliases for pyenv
 if command -v pyenv 1>/dev/null 2>&1; then
-  alias python="$(pyenv which python)"
+  # python function is defined in .zshrc for lazy loading
   alias pip="$(pyenv which pip)"
 fi
 
@@ -173,6 +173,12 @@ fi
 # Uncomment for WSL-specific clipboard aliases
 # alias pbcopy='clip.exe'
 # alias pbpaste='powershell.exe -command "Get-Clipboard" | head -n -1'
+
+# ==================== CLAUDE CLI WRAPPER ====================
+# Wrapper for claude command to set CLAUDE_CLI environment variable
+claude() {
+  CLAUDE_CLI=1 $(which claude) "$@"
+}
 
 # ==================== PROJECT-SPECIFIC ALIASES ====================
 # Add your project-specific aliases here

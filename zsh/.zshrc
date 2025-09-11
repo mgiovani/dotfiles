@@ -56,7 +56,7 @@ pnpm() {
 
 # ==================== ENVIRONMENT VARIABLES ====================
 # Consolidate PATH exports to avoid multiple PATH modifications
-export PATH="$HOME/.local/bin:/opt/homebrew/bin:$HOME/.poetry/bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:/opt/homebrew/opt/llvm/bin:$HOME/go/bin:/usr/local/go/bin:/opt/homebrew/opt/fzf/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$HOME/.local/bin:/opt/homebrew/bin:$HOME/.poetry/bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:/opt/homebrew/opt/llvm/bin:$HOME/go/bin:/usr/local/go/bin:/opt/homebrew/opt/fzf/bin:$PATH"
 export GOPATH=$HOME/go
 # Only set GPG_TTY if actually using GPG to avoid command execution
 if command -v gpg >/dev/null 2>&1; then
@@ -159,6 +159,17 @@ fi
 # Load aliases from separate file for better organization
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 
+# ==================== CLAUDE CLI ALIAS BYPASS ====================
+# Disable modern tool aliases when CLAUDE_CLI is set for compatibility
+if [[ -n "$CLAUDE_CLI" ]]; then
+  # Unalias modern replacements to use original commands
+  unalias ls ll la tree cat less grep search find du df ps htop top rm time 2>/dev/null
+  
+  # Disable delta for git commands - use plain diff output
+  export GIT_PAGER=""
+  alias git='git -c core.pager="" -c interactive.difffilter=""'
+fi
+
 # ==================== WARP TERMINAL INTEGRATION ====================
 # Enable automatic Warp integration for subshells
 # This should be at the end to avoid conflicts with shell initialization
@@ -203,3 +214,5 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   zsh-defer -a eval "$(zoxide init zsh)"
 fi
+
+eval $(thefuck --alias)
