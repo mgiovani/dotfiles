@@ -11,6 +11,7 @@ help:
 	@echo "  make install          - Full installation of dotfiles"
 	@echo "  make install-selective - Interactive selective installation"
 	@echo "  make install-config   - Configuration-based installation"
+	@echo "  make install-vps      - VPS/Linux server installation (minimal)"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make update           - Update Homebrew packages"
@@ -106,9 +107,15 @@ brew-cleanup:
 	@echo "Cleaning up unused packages..."
 	brew bundle cleanup --file=Brewfile
 
+# VPS installation (Linux servers)
+install-vps:
+	@echo "Starting VPS-specific installation..."
+	./scripts/vps-install.sh
+
 # Quick aliases for common operations
 i: install
 s: install-selective
 c: install-config
 u: update
 b: backup
+v: install-vps
