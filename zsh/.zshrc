@@ -1,3 +1,9 @@
+# ==================== TMUX AUTO-START ====================
+# Auto-start tmux if not already running and not in tmux
+#if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#  exec tmux new-session -A -s main
+#fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -7,17 +13,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # ==================== PERFORMANCE OPTIMIZATIONS ====================
-# zsh-defer will be loaded via Zinit for better performance
-# Warp-compatible completion setup
-# Skip custom completion optimization in Warp terminal as it has its own system
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  # Set up completions with better caching (only rebuild cache once per day)
-  autoload -Uz compinit
-  if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
-    compinit
-  else
-    compinit -C
-  fi
+# Set up completions with better caching (only rebuild cache once per day)
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
 fi
 
 # Lazy load NVM
@@ -70,14 +71,14 @@ export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 export CC=clang
 export CXX=clang++
+export FZF_DEFAULT_OPTS="--color=dark --color=fg:-1,bg:-1,hl:#5f87af --color=fg+:#d0d0d0,bg+:#262626,hl+:#5fd7ff --color=info:#afaf87,prompt:#d7005f,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf"
+
 
 # ==================== OH-MY-ZSH SETUP ====================
-# Skip in Warp to reduce initialization time
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  plugins=(git)
-  export ZSH="$HOME/.oh-my-zsh"
-  source $ZSH/oh-my-zsh.sh
-fi
+# OH-MY-ZSH initialization
+plugins=(git)
+export ZSH="$HOME/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh
 
 # ==================== NETWORK CONFIGURATION ====================
 # Source .netrc for network credentials if it exists
@@ -91,25 +92,12 @@ asdf() {
   asdf "$@"
 }
 
-# ==================== BASE16 SHELL THEME ====================
-# Skip Base16 in Warp since it provides its own theming
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  BASE16_SHELL="$HOME/.config/base16-shell/"
-  if [ -d "$BASE16_SHELL" ]; then
-    [ -n "$PS1" ] && \
-        [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-            source "$BASE16_SHELL/profile_helper.sh"
-    # Load the default dark theme if it exists
-    [ -s "$BASE16_SHELL/scripts/base16-default-dark.sh" ] && \
-        source "$BASE16_SHELL/scripts/base16-default-dark.sh"
-  fi
-fi
+# Base16 Shell will be loaded by Zinit below
 
 set bell-style none
 
 # ==================== POWERLEVEL10K THEME ====================
-# Skip P10K in Warp since it provides its own prompt
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
+# Powerlevel10k theme initialization
   # Try brew-installed p10k first, then fallback to manually installed
   if [[ -f "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
     source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
@@ -118,7 +106,6 @@ if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
   fi
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-fi
 
 # ==================== ADDITIONAL TOOLS ====================
 # FZF fuzzy finder - will be deferred after zinit loads zsh-defer
@@ -143,17 +130,11 @@ python() {
 # Bun setup
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-# Bun completions - lazy loaded (skip in Warp to avoid conflicts)
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-fi
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# Additional completion setup (if needed for custom completions) - Skip in Warp
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  fpath+=~/.zfunc
-  # Completion styling
-  zstyle ':completion:*' menu select
-fi
+fpath+=~/.zfunc
+# Completion styling
+zstyle ':completion:*' menu select
 
 # ==================== ALIASES ====================
 # Load aliases from separate file for better organization
@@ -164,16 +145,13 @@ fi
 if [[ -n "$CLAUDE_CLI" ]]; then
   # Unalias modern replacements to use original commands
   unalias ls ll la tree cat less grep search find du df ps htop top rm time 2>/dev/null
-  
+
   # Disable delta for git commands - use plain diff output
   export GIT_PAGER=""
   alias git='git -c core.pager="" -c interactive.difffilter=""'
 fi
 
-# ==================== WARP TERMINAL INTEGRATION ====================
-# Enable automatic Warp integration for subshells
-# This should be at the end to avoid conflicts with shell initialization
-printf '\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh"}}\x9c'
+# ==================== ZINIT PLUGIN MANAGER ====================
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
@@ -192,6 +170,9 @@ autoload -Uz _zinit
 # ==================== ZINIT TURBO MODE PLUGINS ====================
 # Load plugins with turbo mode for better performance
 
+# Base16 Shell - load immediately for theme consistency
+zinit load chriskempson/base16-shell
+
 # Syntax highlighting - load after 1 second
 zinit wait lucid for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
@@ -206,13 +187,14 @@ zinit load romkatv/zsh-defer
 
 # Now that zsh-defer is loaded, apply it to slow commands
 zsh-defer -a [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-  zsh-defer -a [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-fi
+zsh-defer -a [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # Zoxide integration - lazy load for better performance
 if command -v zoxide >/dev/null 2>&1; then
   zsh-defer -a eval "$(zoxide init zsh)"
 fi
+
+# Set Base16 theme after plugins are loaded
+base16_default-dark
 
 eval $(thefuck --alias)

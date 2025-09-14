@@ -15,52 +15,102 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # ==================== MODERN CLI TOOL ALIASES ====================
-# Use modern replacements if available, fallback to traditional tools
+# Modern tools available as separate commands (keeping native commands intact)
 if command -v eza &> /dev/null; then
-  alias ls='eza --icons'
-  alias ll='eza -la --git --icons'
-  alias la='eza -la --git --icons'
-  alias tree='eza --tree --icons'
+  alias exa='eza --icons'
+  alias lx='eza --icons'
+  alias llx='eza -la --git --icons'
+  alias lax='eza -la --git --icons'
+  alias treex='eza --tree --icons'
 fi
 
 if command -v bat &> /dev/null; then
-  alias cat='bat --style=auto'
-  alias less='bat --style=auto'
+  alias batcat='bat --style=auto'
+  alias batless='bat --style=auto'
 fi
 
 if command -v rg &> /dev/null; then
-  alias grep='rg --color=always'
   alias search='rg'
+  alias rggrep='rg --color=always'
 fi
 
 if command -v fd &> /dev/null; then
-  alias find='fd'
+  alias fdfind='fd'
 fi
 
 if command -v dust &> /dev/null; then
-  alias du='dust'
+  alias dustdu='dust'
 fi
 
 if command -v duf &> /dev/null; then
-  alias df='duf'
+  alias dufdf='duf'
 fi
 
 if command -v procs &> /dev/null; then
-  alias ps='procs'
+  alias procsps='procs'
 fi
 
 if command -v bottom &> /dev/null; then
-  alias htop='btm'
-  alias top='btm'
+  alias btm='bottom'
+  alias bottomtop='bottom'
 fi
 
 if command -v trash &> /dev/null; then
-  alias rm='trash'
+  alias trashrm='trash'
 fi
 
 if command -v hyperfine &> /dev/null; then
-  alias time='hyperfine'
+  alias hypertime='hyperfine'
 fi
+
+# ==================== OPTIONAL MODERN OVERRIDES ====================
+# Uncomment the lines below if you want modern tools to replace native commands
+# WARNING: This will override native commands - use with caution
+#
+# if command -v eza &> /dev/null; then
+#   alias ls='eza --icons'
+#   alias ll='eza -la --git --icons'
+#   alias la='eza -la --git --icons'
+#   alias tree='eza --tree --icons'
+# fi
+#
+# if command -v bat &> /dev/null; then
+#   alias cat='bat --style=auto'
+#   alias less='bat --style=auto'
+# fi
+#
+# if command -v rg &> /dev/null; then
+#   alias grep='rg --color=always'
+# fi
+#
+# if command -v fd &> /dev/null; then
+#   alias find='fd'
+# fi
+#
+# if command -v dust &> /dev/null; then
+#   alias du='dust'
+# fi
+#
+# if command -v duf &> /dev/null; then
+#   alias df='duf'
+# fi
+#
+# if command -v procs &> /dev/null; then
+#   alias ps='procs'
+# fi
+#
+# if command -v bottom &> /dev/null; then
+#   alias htop='btm'
+#   alias top='btm'
+# fi
+#
+# if command -v trash &> /dev/null; then
+#   alias rm='trash'
+# fi
+#
+# if command -v hyperfine &> /dev/null; then
+#   alias time='hyperfine'
+# fi
 
 # Zoxide shortcuts (smart cd with frecency)
 if command -v zoxide &> /dev/null; then
@@ -82,7 +132,7 @@ alias gcm='git checkout main || git checkout master'
 alias gp='git push'
 alias gl='git pull'
 alias glog='git log --oneline --graph --decorate'
-alias update="git fetch --all --prune && git merge"
+alias gfm="git fetch --all --prune && git merge"
 
 # ==================== DOCKER ALIASES ====================
 # Only add if Docker is installed
@@ -166,6 +216,14 @@ if command -v tmux >/dev/null 2>&1; then
   alias tn='tmux new-session -s'
 fi
 
+# ==================== TMUXINATOR SHORTCUTS ====================
+if command -v tmuxinator >/dev/null 2>&1; then
+  alias mux='tmuxinator'
+  alias muxd='tmuxinator start dotfiles'
+  alias muxl='tmuxinator list'
+  alias muxs='tmuxinator stop'
+fi
+
 # ==================== OPTIONAL OVERRIDES ====================
 # Uncomment if you want to use neovim instead of vim
 # alias vim="nvim"
@@ -176,9 +234,9 @@ fi
 
 # ==================== CLAUDE CLI WRAPPER ====================
 # Wrapper for claude command to set CLAUDE_CLI environment variable
-claude() {
-  CLAUDE_CLI=1 $(which claude) "$@"
-}
+#claude() {
+#  CLAUDE_CLI=1 /Users/giovani.moutinho/.local/bin/claude "$@"
+#}
 
 # ==================== PROJECT-SPECIFIC ALIASES ====================
 # Add your project-specific aliases here
