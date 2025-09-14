@@ -55,13 +55,8 @@ else
     print_status "Oh My Zsh already installed"
 fi
 
-# Install Powerlevel10k theme
-if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-    print_status "Installing Powerlevel10k theme..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
-else
-    print_status "Powerlevel10k already installed"
-fi
+# Powerlevel10k will be automatically installed by Zinit when zsh starts
+print_status "Powerlevel10k will be installed automatically by Zinit plugin manager"
 
 # Install Oh My Zsh plugins
 print_status "Installing Zsh plugins..."
@@ -120,14 +115,8 @@ if [ -f "$DOTFILES_DIR/zsh/.p10k.zsh" ]; then
     print_status "Linked .p10k.zsh"
 fi
 
-# Set ZSH theme for Oh My Zsh (since we're using the custom theme location)
-if [ -f "$HOME/.zshrc" ] && [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-    print_status "Configuring Powerlevel10k theme in Oh My Zsh..."
-    if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' "$HOME/.zshrc"; then
-        # This will be handled by the cross-platform zshrc, but we note it here
-        print_status "Theme will be auto-detected by cross-platform zshrc"
-    fi
-fi
+# Theme configuration is handled by Zinit in the zshrc file
+print_status "Powerlevel10k theme will be managed by Zinit plugin manager"
 
 # Change default shell to zsh if not already
 #if [ "$SHELL" != "$(which zsh)" ]; then

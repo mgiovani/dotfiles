@@ -129,24 +129,9 @@ fi
 set bell-style none
 
 # ==================== POWERLEVEL10K THEME ====================
-# Powerlevel10k theme initialization
-if [[ "$IS_MACOS" == "true" ]]; then
-  # Try brew-installed p10k first, then fallback to manually installed
-  if [[ -f "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
-    source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
-  elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-    source ~/powerlevel10k/powerlevel10k.zsh-theme
-  fi
-else
-  # Linux: Use Oh My Zsh version or manually installed
-  if [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-    ZSH_THEME="powerlevel10k/powerlevel10k"
-  elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-    source ~/powerlevel10k/powerlevel10k.zsh-theme
-  fi
-fi
-  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Powerlevel10k will be loaded by Zinit below - no manual sourcing needed
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # ==================== ADDITIONAL TOOLS ====================
 # FZF fuzzy finder - platform-specific paths
@@ -225,6 +210,9 @@ autoload -Uz _zinit
 
 # ==================== ZINIT TURBO MODE PLUGINS ====================
 # Load plugins with turbo mode for better performance
+
+# Powerlevel10k theme - load immediately for prompt
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # Base16 Shell - load immediately for theme consistency
 zinit load chriskempson/base16-shell
