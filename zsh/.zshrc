@@ -1,8 +1,22 @@
+# ==================== ENVIRONMENT DETECTION ====================
+# Detect if we're on macOS or Linux to adapt configurations
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export IS_MACOS=true
+  export IS_LINUX=false
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  export IS_MACOS=false
+  export IS_LINUX=true
+else
+  export IS_MACOS=false
+  export IS_LINUX=false
+fi
+
 # ==================== TMUX AUTO-START ====================
-# Auto-start tmux if not already running and not in tmux
-#if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-#  exec tmux new-session -A -s main
-#fi
+# Auto-start tmux if not already running and not in tmux (disabled by default)
+# Uncomment the following lines if you want tmux to auto-start
+# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#   exec tmux new-session -A -s main
+# fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -21,43 +35,56 @@ else
   compinit -C
 fi
 
-# Lazy load NVM
-export NVM_DIR="$HOME/.nvm"
-# Only set up NVM when we actually need it
-nvm() {
-  unset -f nvm node npm npx pnpm
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-  nvm "$@"
-}
-node() {
-  unset -f nvm node npm npx pnpm
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-  node "$@"
-}
-npm() {
-  unset -f nvm node npm npx pnpm
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-  npm "$@"
-}
-npx() {
-  unset -f nvm node npm npx pnpm
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-  npx "$@"
-}
-pnpm() {
-  unset -f nvm node npm npx pnpm
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-  pnpm "$@"
-}
+# ==================== NODE VERSION MANAGER (NVM) ====================
+# Lazy load NVM (macOS only - uses Homebrew paths)
+if [[ "$IS_MACOS" == "true" ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  # Only set up NVM when we actually need it
+  nvm() {
+    unset -f nvm node npm npx pnpm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    nvm "$@"
+  }
+  node() {
+    unset -f nvm node npm npx pnpm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    node "$@"
+  }
+  npm() {
+    unset -f nvm node npm npx pnpm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    npm "$@"
+  }
+  npx() {
+    unset -f nvm node npm npx pnpm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    npx "$@"
+  }
+  pnpm() {
+    unset -f nvm node npm npx pnpm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    pnpm "$@"
+  }
+fi
 
 # ==================== ENVIRONMENT VARIABLES ====================
 # Consolidate PATH exports to avoid multiple PATH modifications
-export PATH="/opt/homebrew/opt/libpq/bin:$HOME/.local/bin:/opt/homebrew/bin:$HOME/.poetry/bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:/opt/homebrew/opt/llvm/bin:$HOME/go/bin:/usr/local/go/bin:/opt/homebrew/opt/fzf/bin:$PATH"
+if [[ "$IS_MACOS" == "true" ]]; then
+  # macOS-specific paths (Homebrew)
+  export PATH="/opt/homebrew/opt/libpq/bin:$HOME/.local/bin:/opt/homebrew/bin:$HOME/.poetry/bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:/opt/homebrew/opt/llvm/bin:$HOME/go/bin:/usr/local/go/bin:/opt/homebrew/opt/fzf/bin:$PATH"
+else
+  # Linux/VPS-specific paths
+  export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:/usr/local/go/bin:$PATH"
+  # Add cargo bin if it exists (for Rust tools)
+  if [ -d "$HOME/.cargo/bin" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+  fi
+fi
 export GOPATH=$HOME/go
 # Only set GPG_TTY if actually using GPG to avoid command execution
 if command -v gpg >/dev/null 2>&1; then
@@ -67,10 +94,13 @@ export PYTHONBREAKPOINT=ipdb.set_trace
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/*'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-export CC=clang
-export CXX=clang++
+# ==================== COMPILER CONFIGURATION ====================
+if [[ "$IS_MACOS" == "true" ]]; then
+  export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  export CC=clang
+  export CXX=clang++
+fi
 export FZF_DEFAULT_OPTS="--color=dark --color=fg:-1,bg:-1,hl:#5f87af --color=fg+:#d0d0d0,bg+:#262626,hl+:#5fd7ff --color=info:#afaf87,prompt:#d7005f,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf"
 
 
@@ -85,12 +115,14 @@ source $ZSH/oh-my-zsh.sh
 [ -f $HOME/.netrc ] && source $HOME/.netrc
 
 # ==================== ASDF (VERSION MANAGER) ====================
-# Lazy load ASDF to avoid startup delay
-asdf() {
-  unfunction asdf
-  . /opt/homebrew/opt/asdf/libexec/asdf.sh
-  asdf "$@"
-}
+# Lazy load ASDF to avoid startup delay (macOS only)
+if [[ "$IS_MACOS" == "true" ]]; then
+  asdf() {
+    unfunction asdf
+    . /opt/homebrew/opt/asdf/libexec/asdf.sh
+    asdf "$@"
+  }
+fi
 
 # Base16 Shell will be loaded by Zinit below
 
@@ -98,39 +130,63 @@ set bell-style none
 
 # ==================== POWERLEVEL10K THEME ====================
 # Powerlevel10k theme initialization
+if [[ "$IS_MACOS" == "true" ]]; then
   # Try brew-installed p10k first, then fallback to manually installed
   if [[ -f "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
     source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
   elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
     source ~/powerlevel10k/powerlevel10k.zsh-theme
   fi
+else
+  # Linux: Use Oh My Zsh version or manually installed
+  if [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+    ZSH_THEME="powerlevel10k/powerlevel10k"
+  elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+    source ~/powerlevel10k/powerlevel10k.zsh-theme
+  fi
+fi
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # ==================== ADDITIONAL TOOLS ====================
-# FZF fuzzy finder - will be deferred after zinit loads zsh-defer
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Lazy load pyenv to avoid startup delay
-pyenv() {
-  unfunction pyenv
-  if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
+# FZF fuzzy finder - platform-specific paths
+if [[ "$IS_MACOS" == "true" ]]; then
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+else
+  # Linux FZF integration - try common paths
+  if command -v fzf &> /dev/null; then
+    # Try common FZF installation paths on Linux
+    [ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
+    [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+    [ -f /usr/share/fzf/shell/completion.zsh ] && source /usr/share/fzf/shell/completion.zsh
+    [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
   fi
-  pyenv "$@"
-}
-python() {
-  if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-    unfunction python
-  fi
-  python "$@"
-}
+fi
 
-# Bun setup
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+# Lazy load pyenv to avoid startup delay (macOS only)
+if [[ "$IS_MACOS" == "true" ]]; then
+  pyenv() {
+    unfunction pyenv
+    if command -v pyenv 1>/dev/null 2>&1; then
+      eval "$(pyenv init -)"
+    fi
+    pyenv "$@"
+  }
+  python() {
+    if command -v pyenv 1>/dev/null 2>&1; then
+      eval "$(pyenv init -)"
+      unfunction python
+    fi
+    python "$@"
+  }
+fi
+
+# Bun setup (macOS only)
+if [[ "$IS_MACOS" == "true" ]]; then
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+fi
 
 fpath+=~/.zfunc
 # Completion styling
@@ -185,16 +241,27 @@ zinit wait lucid for \
 # Load zsh-defer with zinit for even better performance
 zinit load romkatv/zsh-defer
 
-# Now that zsh-defer is loaded, apply it to slow commands
-zsh-defer -a [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-zsh-defer -a [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
-# Zoxide integration - lazy load for better performance
-if command -v zoxide >/dev/null 2>&1; then
-  zsh-defer -a eval "$(zoxide init zsh)"
+# Now that zsh-defer is loaded, apply it to slow commands (macOS only)
+if [[ "$IS_MACOS" == "true" ]]; then
+  zsh-defer -a [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+  zsh-defer -a [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 fi
 
-# Set Base16 theme after plugins are loaded
-base16_default-dark
+# Zoxide integration - lazy load for better performance (if available)
+if command -v zoxide >/dev/null 2>&1; then
+  if [[ "$IS_MACOS" == "true" ]]; then
+    zsh-defer -a eval "$(zoxide init zsh)"
+  else
+    eval "$(zoxide init zsh)"
+  fi
+fi
 
-eval $(thefuck --alias)
+# Set Base16 theme after plugins are loaded (if available)
+if command -v base16_default-dark >/dev/null 2>&1; then
+  base16_default-dark
+fi
+
+# Load thefuck if available (macOS only)
+if [[ "$IS_MACOS" == "true" ]] && command -v thefuck >/dev/null 2>&1; then
+  eval $(thefuck --alias)
+fi

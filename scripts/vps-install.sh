@@ -120,6 +120,15 @@ if [ -f "$DOTFILES_DIR/zsh/.p10k.zsh" ]; then
     print_status "Linked .p10k.zsh"
 fi
 
+# Set ZSH theme for Oh My Zsh (since we're using the custom theme location)
+if [ -f "$HOME/.zshrc" ] && [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+    print_status "Configuring Powerlevel10k theme in Oh My Zsh..."
+    if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' "$HOME/.zshrc"; then
+        # This will be handled by the cross-platform zshrc, but we note it here
+        print_status "Theme will be auto-detected by cross-platform zshrc"
+    fi
+fi
+
 # Change default shell to zsh if not already
 #if [ "$SHELL" != "$(which zsh)" ]; then
 #    print_status "Changing default shell to zsh..."
