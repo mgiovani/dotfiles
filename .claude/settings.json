@@ -1,0 +1,54 @@
+{
+  "model": "opusplan",
+  "hooks": {
+    "PreToolUse": [],
+    "PostToolUse": [],
+    "Notification": [],
+    "UserPromptSubmit": [],
+    "SessionStart": [],
+    "SessionEnd": [],
+    "Stop": [],
+    "SubagentStop": [],
+    "PreCompact": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/scripts/claude/statusline/statusline.sh",
+    "padding": 0
+  },
+  "version": "1.0",
+  "agents": {
+    "enabled": [
+      "development/bmad-dev",
+      "development/test-agent",
+      "development/bmad-qa",
+      "product/bmad-analyst",
+      "product/bmad-pm",
+      "ux/bmad-ux",
+      "architecture/bmad-architect",
+      "orchestration/forge-orchestrator"
+    ],
+    "default_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "Grep",
+      "Glob"
+    ]
+  },
+  "commands": {
+    "enabled": [
+      "forge/forge-review",
+      "forge/forge-brownfield",
+      "forge/forge-greenfield",
+      "forge/forge-story",
+      "forge/forge-auto"
+    ]
+  },
+  "ui": {
+    "theme": "dark",
+    "show_agent_descriptions": true
+  },
+  "includeCoAuthoredBy": false
+}

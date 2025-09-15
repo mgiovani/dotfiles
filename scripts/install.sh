@@ -93,7 +93,7 @@ backup_existing() {
     local needs_backup=false
     
     # Check if any files would conflict
-    for package in git vim zsh terminal; do
+    for package in git vim zsh tmux nvim .claude cursor; do
         if [[ -d "$DOTFILES_DIR/$package" ]]; then
             while IFS= read -r -d '' file; do
                 local target="$HOME/$(basename "$file")"
@@ -121,66 +121,22 @@ install_dotfiles() {
     
     cd "$DOTFILES_DIR"
     
-    # Install each package
-    for package in git vim zsh tmux nvim iterm2; do
+    # Install each package using Stow
+    for package in git vim zsh tmux nvim .claude cursor; do
         if [[ -d "$package" ]]; then
             print_status "Installing $package configuration..."
-            
-            # Special handling for iTerm2 preferences
-            if [[ "$package" == "iterm2" ]]; then
-                print_status "Installing iTerm2 preferences..."
-                cp "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/"
-                print_success "iTerm2 configuration installed (restart iTerm2 to apply)"
-            else
-                stow --verbose --target="$HOME" "$package"
-                print_success "$package configuration installed."
-            fi
+            stow --verbose --target="$HOME" "$package"
+            print_success "$package configuration installed."
         fi
     done
-    
-    # Handle Cursor IDE configuration (macOS specific)
-    if [[ -d "cursor" ]] && [[ "$OSTYPE" == "darwin"* ]]; then
-        print_status "Installing Cursor IDE configuration..."
-        CURSOR_CONFIG_DIR="$HOME/Library/Application Support/Cursor/User"
-        mkdir -p "$CURSOR_CONFIG_DIR"
-        
-        # Symlink Cursor settings.json
-        if [[ -f "$DOTFILES_DIR/cursor/settings.json" ]]; then
-            target_file="$CURSOR_CONFIG_DIR/settings.json"
-            
-            # Backup existing config before symlinking
-            if [[ -f "$target_file" && ! -L "$target_file" ]]; then
-                backup_file="$target_file.backup.$(date +%Y%m%d_%H%M%S)"
-                mv "$target_file" "$backup_file"
-                print_warning "Existing Cursor settings backed up to: $backup_file"
-            elif [[ -L "$target_file" ]]; then
-                rm "$target_file"
-                print_info "Removed existing Cursor settings symlink."
-            fi
-            
-            ln -s "$DOTFILES_DIR/cursor/settings.json" "$target_file"
-            print_success "Cursor settings symlinked."
-        fi
-        
-        # Symlink Cursor extensions.json
-        if [[ -f "$DOTFILES_DIR/cursor/extensions.json" ]]; then
-            target_file="$CURSOR_CONFIG_DIR/extensions.json"
-            
-            # Backup existing extensions.json before symlinking
-            if [[ -f "$target_file" && ! -L "$target_file" ]]; then
-                backup_file="$target_file.backup.$(date +%Y%m%d_%H%M%S)"
-                mv "$target_file" "$backup_file"
-                print_warning "Existing Cursor extensions list backed up to: $backup_file"
-            elif [[ -L "$target_file" ]]; then
-                rm "$target_file"
-                print_info "Removed existing Cursor extensions symlink."
-            fi
-            
-            ln -s "$DOTFILES_DIR/cursor/extensions.json" "$target_file"
-            print_success "Cursor extensions list symlinked."
-        fi
-        
-        print_warning "Install Cursor extensions manually or use: cursor --install-extension vscodevim.vim"
+
+    # Handle special cases that cannot use Stow
+
+    # iTerm2 preferences (binary plist, must be copied)
+    if [[ -d "iterm2" ]] && [[ "$OSTYPE" == "darwin"* ]]; then
+        print_status "Installing iTerm2 preferences..."
+        cp "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/"
+        print_success "iTerm2 configuration installed (restart iTerm2 to apply)"
     fi
     
     # Handle terminal configuration (not a dotfile, goes to specific location)
@@ -291,7 +247,7 @@ install_base16_shell() {
 # Main installation process
 main() {
     print_status "Starting dotfiles installation..."
-    print_status "This will install configurations for: git, vim, neovim, zsh, tmux, iTerm2, Cursor IDE"
+    print_status "This will install configurations for: git, vim, neovim, zsh, tmux, iTerm2, Cursor IDE, Claude Code"
     
     # Ask for confirmation
     read -p "Do you want to continue? (y/N): " -n 1 -r
