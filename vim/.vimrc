@@ -228,32 +228,32 @@ if isdirectory(expand($HOME . '/.vim/plugged/'))
     endif
 
     if isdirectory(expand($HOME . '/.vim/plugged/vim-lsp/'))
+        " LSP settings
         let g:lsp_diagnostics_enabled = 1
         let g:lsp_signs_enabled = 1
-        let g:lsp_diagnostics_echo_cursor = 1
-        let g:lsp_highlights_enabled = 1
-        let g:lsp_textprop_enabled = 1
-        let g:lsp_settings_filetype_python = ['ruff', 'pyright']
+        let g:lsp_diagnostics_echo_cursor = 0  " Disable for performance
+        let g:lsp_highlights_enabled = 0       " Disable for performance
+        let g:lsp_textprop_enabled = 0         " Disable for performance
+        let g:lsp_settings_filetype_python = ['pyright-langserver']  " Only pyright for LSP
         let g:lsp_settings_enable_suggestions = 1
         let g:lsp_auto_enable = 1
 
-        " Auto-install and configure language servers (2025 modern approach)
+        " Performance settings
+        let g:lsp_diagnostics_float_cursor = 0
+        let g:lsp_document_highlight_enabled = 0
+        let g:lsp_semantic_enabled = 0
+
+        " LSP configuration
         let g:lsp_settings = {
-        \ 'ruff': {
-        \   'workspace_config': {
-        \     'settings': {
-        \       'args': ['--preview']
-        \     }
-        \   }
-        \ },
-        \ 'pyright': {
+        \ 'pyright-langserver': {
         \   'workspace_config': {
         \     'python': {
         \       'analysis': {
         \         'typeCheckingMode': 'basic',
-        \         'diagnosticMode': 'workspace',
-        \         'stubPath': './typings',
-        \         'autoSearchPaths': v:true
+        \         'diagnosticMode': 'openFilesOnly',
+        \         'useLibraryCodeForTypes': v:false,
+        \         'autoSearchPaths': v:true,
+        \         'stubPath': './typings'
         \       }
         \     }
         \   }
@@ -275,13 +275,18 @@ if isdirectory(expand($HOME . '/.vim/plugged/'))
 
         " Auto-install LSP servers only if not already installed
         function! s:install_lsp_servers_once()
-            " Check if servers exist before installing
-            if !executable('ruff') && !isdirectory(expand('~/.vim/lsp-settings/servers/ruff'))
-                silent! LspInstallServer ruff
+            " Create LSP settings directory if it doesn't exist
+            if !isdirectory(expand('~/.vim/lsp-settings'))
+                call mkdir(expand('~/.vim/lsp-settings'), 'p')
+            endif
+            if !isdirectory(expand('~/.vim/lsp-settings/servers'))
+                call mkdir(expand('~/.vim/lsp-settings/servers'), 'p')
             endif
 
+            " Only install pyright-langserver (ruff handled by ALE)
             if !isdirectory(expand('~/.vim/lsp-settings/servers/pyright-langserver'))
-                silent! LspInstallServer pyright
+                echom "Installing pyright-langserver..."
+                LspInstallServer pyright-langserver
             endif
         endfunction
 
@@ -312,7 +317,7 @@ endif
 " WSL Copy (commented out for cross-platform compatibility)
 " autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' |  clip.exe')
 
-" ==================== ALE + RUFF CONFIGURATION (2025 Best Practices) ====================
+" ==================== ALE + RUFF CONFIGURATION ====================
 " Disable ALE's LSP in favor of standalone LSP plugins
 let g:ale_disable_lsp = 1
 
@@ -323,9 +328,10 @@ let g:ale_virtualtext_cursor = 1
 
 " When to lint
 let g:ale_lint_on_save = 1
-let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_insert_leave = 0       " Disable for performance
 let g:ale_lint_on_text_change = 'never'
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_enter = 0              " Disable for performance
+let g:ale_lint_delay = 1000              " 1 second delay
 
 " Use explicit linters (don't auto-detect)
 let g:ale_linters_explicit = 1
