@@ -1,6 +1,6 @@
 [user]
     email = e@mgiovani.dev
-    name = Giovani Moutinho
+    name = mgiovani
 [core]
     editor = vim
     pager = delta
@@ -18,33 +18,33 @@
     syntax-theme = base16
     side-by-side = false
     features = decorations line-numbers
-    
+
     # Deleted lines: subtle red background for dark terminals
     minus-style = "syntax #3f2d3d"
-    minus-emph-style = "syntax #763842" 
-    
-    # Added lines: subtle green background for dark terminals  
+    minus-emph-style = "syntax #763842"
+
+    # Added lines: subtle green background for dark terminals
     plus-style = "syntax #2d3f2d"
     plus-emph-style = "syntax #385938"
-    
+
     # File headers: bright white for visibility
     file-style = "bold #ffffff"
     file-decoration-style = "#606060"
-    
+
     # Line numbers: muted colors that don't distract
     #line-numbers-left-style = "#606060"
     #line-numbers-right-style = "#606060"
     #line-numbers-minus-style = "#d75f87"  # Pink for deleted
-    #line-numbers-plus-style = "#87d787"   # Green for added  
+    #line-numbers-plus-style = "#87d787"   # Green for added
     #line-numbers-zero-style = "#606060"   # Gray for unchanged
-    
+
     # Alternative syntax themes for different preferences:
     # Uncomment one of these lines to try different themes:
     # syntax-theme = Dracula
     # syntax-theme = base16-eighties.dark
     # syntax-theme = gruvbox-dark
     # syntax-theme = Monokai Extended
-    
+
 [delta "decorations"]
     commit-decoration-style = "bold box ul #ffffff"
     file-style = "bold #ffffff ul"

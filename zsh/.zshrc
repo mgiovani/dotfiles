@@ -41,34 +41,40 @@ if [[ "$IS_MACOS" == "true" ]]; then
   export NVM_DIR="$HOME/.nvm"
   # Only set up NVM when we actually need it
   nvm() {
-    unset -f nvm node npm npx pnpm
+    unset -f nvm node npm npx pnpm bru
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     nvm "$@"
   }
   node() {
-    unset -f nvm node npm npx pnpm
+    unset -f nvm node npm npx pnpm bru
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     node "$@"
   }
   npm() {
-    unset -f nvm node npm npx pnpm
+    unset -f nvm node npm npx pnpm bru
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     npm "$@"
   }
   npx() {
-    unset -f nvm node npm npx pnpm
+    unset -f nvm node npm npx pnpm bru
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     npx "$@"
   }
   pnpm() {
-    unset -f nvm node npm npx pnpm
+    unset -f nvm node npm npx pnpm bru
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     pnpm "$@"
+  }
+  bru() {
+    unset -f nvm node npm npx pnpm bru
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    bru "$@"
   }
 fi
 
@@ -253,3 +259,4 @@ fi
 if [[ "$IS_MACOS" == "true" ]] && command -v thefuck >/dev/null 2>&1; then
   eval $(thefuck --alias)
 fi
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
