@@ -209,21 +209,26 @@ install_tools() {
         if command -v brew &> /dev/null; then
             command -v fzf &> /dev/null || brew install fzf
             command -v rg &> /dev/null || brew install ripgrep
+            command -v unzip &> /dev/null || brew install unzip
         fi
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         if command -v apt &> /dev/null; then
             sudo apt update
             command -v fzf &> /dev/null || sudo apt install -y fzf
             command -v rg &> /dev/null || sudo apt install -y ripgrep
+            command -v unzip &> /dev/null || sudo apt install -y unzip
         elif command -v yum &> /dev/null; then
             command -v fzf &> /dev/null || sudo yum install -y fzf
             command -v rg &> /dev/null || sudo yum install -y ripgrep
+            command -v unzip &> /dev/null || sudo yum install -y unzip
         elif command -v pacman &> /dev/null; then
             command -v fzf &> /dev/null || sudo pacman -S --noconfirm fzf
             command -v rg &> /dev/null || sudo pacman -S --noconfirm ripgrep
+            command -v unzip &> /dev/null || sudo pacman -S --noconfirm unzip
         elif command -v apk &> /dev/null; then
             command -v fzf &> /dev/null || sudo apk add fzf
             command -v rg &> /dev/null || sudo apk add ripgrep
+            command -v unzip &> /dev/null || sudo apk add unzip
         fi
     fi
 
