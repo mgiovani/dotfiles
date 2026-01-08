@@ -144,10 +144,11 @@ if command -v docker >/dev/null 2>&1; then
 fi
 
 # ==================== PYTHON/DEVELOPMENT ALIASES ====================
-# Conditional aliases for pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-  # python function is defined in .zshrc for lazy loading
-  alias pip="$(pyenv which pip)"
+# UV aliases for Python development
+if command -v uv 1>/dev/null 2>&1; then
+  alias pip="uv pip"  # Use uv's faster pip implementation
+  alias uvenv="uv venv"  # Create virtual environments
+  alias uvsync="uv pip sync"  # Sync dependencies from requirements file
 fi
 
 # ==================== UTILITY FUNCTIONS ====================

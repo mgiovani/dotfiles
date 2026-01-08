@@ -35,47 +35,10 @@ else
   compinit -C
 fi
 
-# ==================== NODE VERSION MANAGER (NVM) ====================
-# Lazy load NVM (macOS only - uses Homebrew paths)
-if [[ "$IS_MACOS" == "true" ]]; then
-  export NVM_DIR="$HOME/.nvm"
-  # Only set up NVM when we actually need it
-  nvm() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    nvm "$@"
-  }
-  node() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    node "$@"
-  }
-  npm() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    npm "$@"
-  }
-  npx() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    npx "$@"
-  }
-  pnpm() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    pnpm "$@"
-  }
-  bru() {
-    unset -f nvm node npm npx pnpm bru
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    bru "$@"
-  }
+# ==================== FNM (FAST NODE MANAGER) ====================
+# Initialize fnm (Fast Node Manager) - 40x faster than nvm
+if command -v fnm &> /dev/null; then
+  eval "$(fnm env --use-on-cd)"
 fi
 
 # ==================== ENVIRONMENT VARIABLES ====================
@@ -154,22 +117,12 @@ else
   fi
 fi
 
-# Lazy load pyenv to avoid startup delay (macOS only)
-if [[ "$IS_MACOS" == "true" ]]; then
-  pyenv() {
-    unfunction pyenv
-    if command -v pyenv 1>/dev/null 2>&1; then
-      eval "$(pyenv init -)"
-    fi
-    pyenv "$@"
-  }
-  python() {
-    if command -v pyenv 1>/dev/null 2>&1; then
-      eval "$(pyenv init -)"
-      unfunction python
-    fi
-    python "$@"
-  }
+# ==================== UV (PYTHON PACKAGE MANAGER) ====================
+# Initialize uv - blazingly fast Python package and version manager
+# Replaces pip, pip-tools, pipx, poetry, pyenv, and virtualenv
+if command -v uv &> /dev/null; then
+  # Add uv-installed Python binaries to PATH
+  export PATH="$HOME/.local/bin:$PATH"
 fi
 
 # Bun setup (macOS only)
