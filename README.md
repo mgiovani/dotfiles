@@ -95,8 +95,8 @@ All configurations include fallbacks to traditional tools if modern ones aren't 
 ## Development Stack
 
 **Languages & Runtimes:**
-- **Node.js** + NVM (JavaScript/TypeScript development)
-- **Python** + pyenv (Python development & tooling)  
+- **Node.js** + fnm (Fast Node Manager - 40x faster than nvm)
+- **Python** + uv (Ultra-fast package manager - replaces pyenv, pip, poetry)
 - **Go** (Systems programming, CLI tools)
 
 **No Ruby/rbenv** - Removed to keep the setup focused on actively used technologies.
