@@ -118,14 +118,20 @@ backup_existing() {
 # Install dotfiles using stow
 install_dotfiles() {
     print_status "Installing dotfiles using GNU Stow..."
-    
+
     cd "$DOTFILES_DIR"
-    
+
     # Install each package using Stow
+    # Use --restow (-R) to handle re-runs cleanly (unstow then stow)
+    # Use --adopt to take ownership of existing files (moves them into dotfiles dir)
     for package in git vim zsh tmux nvim .claude cursor; do
         if [[ -d "$package" ]]; then
             print_status "Installing $package configuration..."
-            stow --verbose --target="$HOME" "$package"
+            # First try normal stow, if it fails due to conflicts, use --adopt
+            if ! stow --verbose --target="$HOME" --restow "$package" 2>/dev/null; then
+                print_warning "Conflicts detected for $package, adopting existing files..."
+                stow --verbose --target="$HOME" --adopt "$package"
+            fi
             print_success "$package configuration installed."
         fi
     done
@@ -178,26 +184,126 @@ post_install() {
     if ! command -v fzf &> /dev/null; then
         missing_deps+=("fzf")
     fi
-    
-    if ! command -v ag &> /dev/null; then
-        missing_deps+=("the_silver_searcher (ag)")
+
+    if ! command -v rg &> /dev/null; then
+        missing_deps+=("ripgrep (rg)")
     fi
-    
+
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         print_warning "The following recommended tools are not installed:"
         for dep in "${missing_deps[@]}"; do
             echo "  - $dep"
         done
-        print_status "Consider installing them for the full experience."
+        print_status "Installing missing tools..."
+        install_tools
     else
         print_success "All recommended dependencies are installed!"
+    fi
+}
+
+# Install essential tools (fzf, ripgrep, etc.)
+install_tools() {
+    print_status "Installing essential tools..."
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if command -v brew &> /dev/null; then
+            command -v fzf &> /dev/null || brew install fzf
+            command -v rg &> /dev/null || brew install ripgrep
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if command -v apt &> /dev/null; then
+            sudo apt update
+            command -v fzf &> /dev/null || sudo apt install -y fzf
+            command -v rg &> /dev/null || sudo apt install -y ripgrep
+        elif command -v yum &> /dev/null; then
+            command -v fzf &> /dev/null || sudo yum install -y fzf
+            command -v rg &> /dev/null || sudo yum install -y ripgrep
+        elif command -v pacman &> /dev/null; then
+            command -v fzf &> /dev/null || sudo pacman -S --noconfirm fzf
+            command -v rg &> /dev/null || sudo pacman -S --noconfirm ripgrep
+        elif command -v apk &> /dev/null; then
+            command -v fzf &> /dev/null || sudo apk add fzf
+            command -v rg &> /dev/null || sudo apk add ripgrep
+        fi
+    fi
+
+    print_success "Tools installation completed."
+}
+
+# Install zsh if not present
+install_zsh() {
+    if command -v zsh &> /dev/null; then
+        print_success "Zsh is already installed."
+        return 0
+    fi
+
+    print_status "Installing zsh..."
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if command -v brew &> /dev/null; then
+            brew install zsh
+        else
+            print_error "Homebrew not found. Please install Homebrew first."
+            return 1
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if command -v apt &> /dev/null; then
+            sudo apt update && sudo apt install -y zsh
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y zsh
+        elif command -v pacman &> /dev/null; then
+            sudo pacman -S --noconfirm zsh
+        elif command -v apk &> /dev/null; then
+            sudo apk add zsh
+        else
+            print_error "Unable to install zsh automatically. Please install it manually."
+            return 1
+        fi
+    else
+        print_error "Unsupported operating system. Please install zsh manually."
+        return 1
+    fi
+
+    print_success "Zsh installed successfully."
+
+    # Set zsh as default shell
+    set_zsh_default
+}
+
+# Set zsh as default shell
+set_zsh_default() {
+    local zsh_path
+    zsh_path=$(which zsh)
+
+    if [[ "$SHELL" == *"zsh"* ]]; then
+        print_success "Zsh is already the default shell."
+        return 0
+    fi
+
+    print_status "Setting zsh as default shell..."
+
+    # Ensure zsh is in /etc/shells
+    if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
+        print_status "Adding zsh to /etc/shells..."
+        echo "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+    fi
+
+    # Change default shell
+    if chsh -s "$zsh_path"; then
+        print_success "Zsh set as default shell. Please log out and back in for changes to take effect."
+    else
+        print_warning "Could not set zsh as default shell automatically."
+        print_status "Run manually: chsh -s $zsh_path"
     fi
 }
 
 # Install Oh My Zsh
 install_oh_my_zsh() {
     print_status "Installing Oh My Zsh..."
-    
+
+    # Ensure zsh is installed first
+    install_zsh || return 1
+
     if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
         print_status "Installing Oh My Zsh..."
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -259,10 +365,11 @@ main() {
     
     check_stow
     backup_existing
-    install_dotfiles
+    # Install Oh My Zsh BEFORE dotfiles so stow can overwrite the default .zshrc
     install_oh_my_zsh
     install_powerlevel10k
     install_base16_shell
+    install_dotfiles
     post_install
     
     print_success "Dotfiles installation completed!"
