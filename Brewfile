@@ -12,6 +12,7 @@ tap "homebrew/cask-versions"
 # Essential system tools
 brew "curl"
 brew "wget"
+brew "unzip"
 brew "git"
 brew "openssh"
 brew "gnupg"
@@ -66,8 +67,8 @@ brew "python@3.12"      # Python
 brew "go"               # Go language
 
 # Package managers
-brew "nvm"              # Node version manager (alternative to manual install)
-brew "pyenv"            # Python version manager
+brew "fnm"              # Fast Node Manager - 40x faster than nvm, Rust-based
+brew "uv"               # Ultra-fast Python package manager - replaces pyenv, pip, poetry
 
 # Shell themes
 brew "powerlevel10k"    # Modern, fast zsh theme

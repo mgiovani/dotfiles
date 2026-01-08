@@ -9,6 +9,7 @@ cli_tools:
   # Essential system tools
   - curl
   - wget
+  - unzip
   - git
   - openssh
   - gnupg
@@ -54,8 +55,8 @@ cli_tools:
   - python@3.12      # Python
   
   # Package managers
-  - nvm              # Node version manager
-  - pyenv            # Python version manager
+  - fnm              # Fast Node Manager (40x faster than nvm)
+  - uv               # Ultra-fast Python package manager (replaces pyenv, pip, poetry)
   
   # Shell themes
   - powerlevel10k    # Modern, fast zsh theme
