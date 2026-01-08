@@ -119,11 +119,19 @@ fi
 print_status "Powerlevel10k theme will be managed by Zinit plugin manager"
 
 # Change default shell to zsh if not already
-#if [ "$SHELL" != "$(which zsh)" ]; then
-#    print_status "Changing default shell to zsh..."
-#    chsh -s "$(which zsh)"
-#    print_warning "You'll need to log out and log back in for the shell change to take effect"
-#fi
+if [ "$SHELL" != "$(which zsh)" ]; then
+    print_status "Changing default shell to zsh..."
+    zsh_path=$(which zsh)
+    # Ensure zsh is in /etc/shells
+    if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
+        echo "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+    fi
+    if chsh -s "$zsh_path"; then
+        print_warning "You'll need to log out and log back in for the shell change to take effect"
+    else
+        print_warning "Could not change shell. Run manually: chsh -s $zsh_path"
+    fi
+fi
 
 print_status "VPS installation completed!"
 print_status "Backup of original configs saved to: $backup_dir"
