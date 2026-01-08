@@ -163,23 +163,41 @@ install_shell_deps() {
 }
 
 
+# macOS installation (Homebrew)
+run_macos_install() {
+    check_homebrew
+
+    # Install packages by section
+    install_packages "brew" "cli_tools"
+    install_packages "cask" "applications"
+    install_packages "cask" "fonts"
+
+    # Install shell dependencies
+    install_shell_deps
+
+    # Install dotfiles if enabled
+    install_dotfiles
+}
+
 # Main installation function
 main() {
     print_status "Starting configuration-based installation..."
-    
-    check_homebrew
-    
-    # Install packages by section
-    install_packages "brew" "cli_tools"
-    install_packages "cask" "applications" 
-    install_packages "cask" "fonts"
-    
-    # Install shell dependencies
-    install_shell_deps
-    
-    # Install dotfiles if enabled
-    install_dotfiles
-    
+
+    # Detect OS and route to appropriate installer
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        print_status "Detected macOS - using Homebrew"
+        run_macos_install
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        print_status "Detected Linux - using package managers"
+        # Source and run Linux-specific installation
+        source "$SCRIPT_DIR/config-install-linux.sh"
+        run_linux_install
+    else
+        print_error "Unsupported operating system: $OSTYPE"
+        print_status "Supported: macOS (darwin), Linux (linux-gnu)"
+        exit 1
+    fi
+
     print_success "Configuration-based installation completed!"
     print_status "Installed packages based on: $CONFIG_FILE"
     print_status "To modify your installation, edit the config file and run this script again"
