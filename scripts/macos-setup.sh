@@ -280,40 +280,36 @@ install_fonts() {
 setup_dev_environment() {
     print_section "Setting up Development Environment"
     
-    # Install Node Version Manager (NVM)
-    if [[ ! -d "$HOME/.nvm" ]]; then
-        print_status "Installing NVM..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        
+    # Install fnm (Fast Node Manager)
+    if ! command -v fnm &> /dev/null; then
+        print_status "Installing fnm (Fast Node Manager)..."
+        curl -fsSL https://fnm.vercel.app/install | bash
+
+        # Initialize fnm for current session
+        export PATH="$HOME/.local/share/fnm:$PATH"
+        eval "$(fnm env)"
+
         # Install latest LTS Node.js
-        nvm install --lts
-        nvm use --lts
-        print_success "NVM and Node.js LTS installed"
+        fnm install --lts
+        fnm use lts-latest
+        print_success "fnm and Node.js LTS installed"
     else
-        print_success "NVM already installed"
+        print_success "fnm already installed"
     fi
-    
-    # Install Python version manager (pyenv)
-    if [[ ! -d "$HOME/.pyenv" ]]; then
-        print_status "Installing pyenv..."
-        curl https://pyenv.run | bash
-        
-        # Add pyenv to shell
-        echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zprofile
-        echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zprofile
-        echo 'eval "$(pyenv init -)"' >> ~/.zprofile
-        
-        # Install latest Python
-        export PYENV_ROOT="$HOME/.pyenv"
-        export PATH="$PYENV_ROOT/bin:$PATH"
-        eval "$(pyenv init -)"
-        pyenv install 3.12.0
-        pyenv global 3.12.0
-        print_success "pyenv and Python 3.12 installed"
+
+    # Install uv (Python package and version manager)
+    if ! command -v uv &> /dev/null; then
+        print_status "Installing uv (ultra-fast Python package manager)..."
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+
+        # Add uv to PATH for current session
+        export PATH="$HOME/.cargo/bin:$PATH"
+
+        # Install latest Python using uv
+        uv python install 3.12
+        print_success "uv and Python 3.12 installed"
     else
-        print_success "pyenv already installed"
+        print_success "uv already installed"
     fi
     
 }

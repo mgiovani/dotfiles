@@ -136,6 +136,7 @@ install_essentials() {
                         "tmux"
                         "curl"
                         "wget"
+                        "unzip"
                         "build-essential"
                     )
                     
@@ -165,6 +166,7 @@ install_essentials() {
                         "tmux"
                         "curl"
                         "wget"
+                        "unzip"
                         "@development-tools"
                     )
                     
@@ -194,6 +196,7 @@ install_essentials() {
                         "tmux"
                         "curl"
                         "wget"
+                        "unzip"
                         "base-devel"
                     )
                     
@@ -256,24 +259,22 @@ setup_shell() {
 setup_dev_env() {
     print_status "Setting up development environment..."
     
-    # Install NVM (Node Version Manager)
-    if [[ ! -d "$HOME/.nvm" ]]; then
-        print_status "Installing NVM..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        print_success "NVM installed"
+    # Install fnm (Fast Node Manager)
+    if ! command -v fnm &> /dev/null; then
+        print_status "Installing fnm..."
+        curl -fsSL https://fnm.vercel.app/install | bash
+        print_success "fnm installed"
     else
-        print_success "NVM already installed"
+        print_success "fnm already installed"
     fi
-    
-    # Install pyenv (Python version manager) - only on Linux/macOS
-    if [[ "$OS" != "windows" ]] && [[ ! -d "$HOME/.pyenv" ]]; then
-        print_status "Installing pyenv..."
-        curl https://pyenv.run | bash
-        print_success "pyenv installed"
-    elif [[ -d "$HOME/.pyenv" ]]; then
-        print_success "pyenv already installed"
+
+    # Install uv (Python package and version manager) - only on Linux/macOS
+    if [[ "$OS" != "windows" ]] && ! command -v uv &> /dev/null; then
+        print_status "Installing uv..."
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        print_success "uv installed"
+    elif command -v uv &> /dev/null; then
+        print_success "uv already installed"
     fi
     
     # Install Base16 Shell (terminal colors)

@@ -328,9 +328,14 @@ main() {
         fi
         
         print_status "Installing user-space tools..."
-        # NVM
-        if [[ ! -d "$HOME/.nvm" ]]; then
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+        # fnm (Fast Node Manager)
+        if ! command -v fnm &> /dev/null; then
+            curl -fsSL https://fnm.vercel.app/install | bash
+        fi
+
+        # uv (Python package manager)
+        if ! command -v uv &> /dev/null; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
         fi
         
         # Python packages
