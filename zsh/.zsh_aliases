@@ -116,7 +116,7 @@ fi
 if command -v zoxide &> /dev/null; then
   alias z='zoxide'
   alias zi='zoxide query -i'  # interactive selection
-  
+
   # Uncomment to replace cd with zoxide (use with caution)
   # alias cd='z'
 fi
@@ -215,6 +215,7 @@ if command -v tmux >/dev/null 2>&1; then
   alias tls='tmux list-sessions'
   alias ta='tmux attach-session -t'
   alias tn='tmux new-session -s'
+  alias tmac='tmux new -A -s'
 fi
 
 # ==================== TMUXINATOR SHORTCUTS ====================
@@ -244,3 +245,22 @@ fi
 # Example:
 # alias myproject="cd ~/projects/myproject"
 # alias startdev="cd ~/projects/myproject && npm run dev"
+
+
+# ==================== PERSONAL ALIASES ====================
+# Hibernate Windows after specified hours (from WSL)
+hibernate() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: hibernate <hours>"
+    echo "Example: hibernate 2  # Hibernate after 2 hours"
+    return 1
+  fi
+
+  local hours=$1
+  local seconds=$((hours * 3600))
+
+  echo "Windows will hibernate after $hours hour(s) ($seconds seconds)"
+  powershell.exe -Command "Start-Sleep -Seconds $seconds; shutdown /h" &
+
+  echo "Background process started. Close this terminal safely."
+}

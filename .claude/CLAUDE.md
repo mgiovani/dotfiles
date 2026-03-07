@@ -1,41 +1,31 @@
 # User Memory
 
-## Gitingest Tool for Repository Analysis
+## File Management Policy
 
-When analyzing Git repositories (especially large codebases), use the gitingest tool to create a comprehensive digest file that saves tokens and provides efficient analysis:
+**NEVER create new files unless absolutely necessary.** ALWAYS prioritize editing existing files over creating new ones. This includes:
+- Documentation files (README.md, docs, etc.)
+- Configuration files
+- Code files
+- Any other project files
 
-### Basic Usage
+Only create a new file when explicitly requested or when the file genuinely does not exist and is essential for the task.
+
+## Analyzing Remote Codebases
+
+For remote GitHub repositories, use gitingest + Gemini CLI to save tokens:
 
 ```bash
-# For local directories
-gitingest /path/to/repo -o /tmp/repo_digest.txt
-
-# For GitHub URLs  
+# Create digest
 gitingest https://github.com/user/repo -o /tmp/repo_digest.txt
 
-# For private repos (with GitHub token)
-gitingest https://github.com/user/private-repo -o /tmp/repo_digest.txt -t $GITHUB_TOKEN
+# Analyze with Gemini
+gemini /tmp/repo_digest.txt "find X pattern or explain Y"
+
+# Cleanup
+rm /tmp/repo_digest.txt
 ```
 
-### Workflow
-
-1. **Create digest**: Run gitingest command to generate a comprehensive text file
-2. **Read digest**: Use Read tool to analyze the digest file
-3. **Cleanup**: Remove the temporary file when done: `rm /tmp/repo_digest.txt`
-
-### Benefits
-
-- **Token efficient**: Single file contains entire repository structure and content
-- **Temporary storage**: Using /tmp/ ensures automatic cleanup on system reboot
-- **Comprehensive**: Includes file structure, content, and respects .gitignore patterns
-- **Flexible**: Supports local directories and remote GitHub repositories
-
-### Options
-
-- `-s, --max-size`: Limit file size processing (bytes)
-- `-e, --exclude-pattern`: Exclude files matching pattern
-- `-i, --include-pattern`: Include only files matching pattern
-- `--include-gitignored`: Include normally ignored files
+For private repos, add `-t $GITHUB_TOKEN`
 
 ## Context7 MCP for Documentation Validation
 
@@ -51,14 +41,21 @@ When making changes to code that involves libraries, frameworks, or APIs, ALWAYS
 
 ### Usage Pattern
 
-1. **Before Implementation**: Add "use context7" to your prompt when researching the current documentation
-2. **Validation**: Check if your planned implementation matches current API patterns
-3. **Implementation**: Proceed with confidence using up-to-date examples
+**IMPORTANT**: Always use context7 via an Explore subagent, not directly. This ensures efficient token usage and proper context management.
+
+1. **Spawn Explore Agent**: Use the Task tool with `subagent_type=Explore` to research documentation
+2. **Provide Clear Task**: Give the Explore agent a specific prompt about what documentation to validate
+3. **Validation**: The agent will use context7 tools to check current API patterns
+4. **Implementation**: Proceed with confidence using the validated, up-to-date examples
 
 ### Example Usage
 
 ```
-Before implementing authentication with NextAuth.js, let me use context7 to get the latest documentation and ensure I'm using current patterns.
+# Correct approach - use Explore subagent
+Task tool with subagent_type=Explore: "Use context7 to research NextAuth.js authentication patterns and validate the current API for implementing user login"
+
+# Incorrect - don't call context7 MCP tools directly
+mcp__plugin_context7_context7__query-docs (❌ Don't do this)
 ```
 
 ### Benefits
@@ -68,9 +65,9 @@ Before implementing authentication with NextAuth.js, let me use context7 to get 
 - Reduces debugging time from outdated examples
 - Provides official, current code examples
 
-## Web Search for 2025 Best Practices
+## Web Search for 2026 Best Practices
 
-Before starting any new implementation, ALWAYS web search for current best practices and 2025 patterns:
+Before starting any new implementation, ALWAYS web search for current best practices and 2026 patterns:
 
 ### When to Web Search
 
@@ -82,8 +79,8 @@ Before starting any new implementation, ALWAYS web search for current best pract
 
 ### Search Strategy
 
-1. **Current Year Focus**: Include "2025" in search queries to get latest practices
-2. **Best Practices**: Search for "best practices 2025" for the specific technology
+1. **Current Year Focus**: Include "2026" in search queries to get latest practices
+2. **Best Practices**: Search for "best practices 2026" for the specific technology
 3. **Security Considerations**: Always check for current security recommendations
 4. **Performance Patterns**: Look for modern performance optimization techniques
 
@@ -94,3 +91,33 @@ Before starting any new implementation, ALWAYS web search for current best pract
 - Leverages modern performance optimizations
 - Avoids deprecated or discouraged patterns
 
+## Subagent Policy
+
+### Model Selection
+| Agent Type | Model | Why |
+|---|---|---|
+| Explore | `haiku` | Cheap, good for research/search |
+| Plan | `opus` | Best reasoning for architecture |
+| All others | `sonnet` | Balance of cost and capability |
+
+**Never** leave model unset — it defaults to the parent model which may be opus.
+
+### Context Offloading
+Proactively spawn parallel Explore (haiku) subagents to keep the main context clean. Do NOT research inline when a subagent can do it.
+
+**Always offload to subagents:**
+- Web searches, documentation lookups, Context7 queries
+- Reading large/multiple files for research or exploration
+- Codebase-wide searches spanning many files
+- Codebase-wide replacements (renaming, refactoring across files)
+- Comparing multiple approaches or libraries
+
+**Spawn multiple agents in parallel** when the task involves independent research tracks (e.g., "research X vs Y" → 2 agents, one per topic).
+
+## Modern Development Tools
+
+Prefer modern tools when setting up projects:
+
+- **Python**: Use `uv` (instead of pip/venv)
+- **Node.js versions**: Use `fnm` (instead of nvm)
+- **JavaScript/TypeScript**: Use `bun` (instead of npm/yarn/pnpm)

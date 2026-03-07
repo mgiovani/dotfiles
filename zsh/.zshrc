@@ -60,6 +60,10 @@ if command -v gpg >/dev/null 2>&1; then
   export GPG_TTY=$(tty)
 fi
 export PYTHONBREAKPOINT=ipdb.set_trace
+# WSL: Open URLs in Windows browser instead of Linux
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
+  export BROWSER=wslview
+fi
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/*'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
@@ -185,6 +189,24 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
   zsh-users/zsh-autosuggestions
 
+# Oh My Zsh plugins - load asynchronously for instant startup
+# Docker plugin uses OMZ installation directly to include completions
+zinit wait lucid for \
+    atinit"fpath+=($ZSH/plugins/docker/completions)" \
+    OMZP::docker \
+    OMZP::docker-compose \
+    OMZP::npm \
+    OMZP::bun \
+    OMZP::pip \
+    OMZP::uv \
+    OMZP::fnm \
+    OMZP::gh \
+    OMZP::tmux \
+    OMZP::fzf \
+    OMZP::sudo \
+    OMZP::systemd \
+    OMZP::rsync
+
 # Load zsh-defer with zinit for even better performance
 zinit load romkatv/zsh-defer
 
@@ -204,8 +226,8 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 # Set Base16 theme after plugins are loaded (if available)
-if command -v base16_default-dark >/dev/null 2>&1; then
-  base16_default-dark
+if command -v base16_twilight >/dev/null 2>&1; then
+  base16_twilight
 fi
 
 # Load thefuck if available (macOS only)
@@ -213,3 +235,47 @@ if [[ "$IS_MACOS" == "true" ]] && command -v thefuck >/dev/null 2>&1; then
   eval $(thefuck --alias)
 fi
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+eval $(keychain --eval --quiet id_ed25519)
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -f "$HOME/.zsh/plugins/zsh-ai-commands/zsh-ai-commands.plugin.zsh" ] && source "$HOME/.zsh/plugins/zsh-ai-commands/zsh-ai-commands.plugin.zsh"
+
+# ==================== IMAGE PASTE WITH ALT+V ====================
+# Paste images from Windows clipboard as file paths
+paste-image-widget() {
+    local result
+    result=$(paste-image 2>&1)
+
+    if [[ $? -eq 0 ]]; then
+        # Successfully got a path - insert it into terminal
+        LBUFFER="${LBUFFER}${result}"
+
+        # Also copy to Windows clipboard for Ctrl+V in Claude Code (WSL only)
+        command -v clip.exe &>/dev/null && echo -n "$result" | clip.exe
+
+        # Show brief confirmation
+        zle -M "✓ Path inserted and copied to clipboard (Ctrl+V ready)"
+    else
+        # Show error briefly
+        zle -M "$result"
+    fi
+    zle redisplay
+}
+
+zle -N paste-image-widget
+bindkey '^[v' paste-image-widget  # Alt+V
+alias pic="paste-image-to-clipboard"
+
+# opencode
+[ -d "$HOME/.opencode/bin" ] && export PATH="$HOME/.opencode/bin:$PATH"
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
+# UTF-8 locale settings
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
