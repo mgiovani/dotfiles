@@ -1,5 +1,9 @@
 # User Memory
 
+## Edit Discipline
+
+Before editing any file, read it first. Before modifying a function, grep for all callers. Research before you edit.
+
 ## File Management Policy
 
 **NEVER create new files unless absolutely necessary.** ALWAYS prioritize editing existing files over creating new ones. This includes:
@@ -90,6 +94,10 @@ Before starting any new implementation, ALWAYS web search for current best pract
 - Incorporates latest security practices
 - Leverages modern performance optimizations
 - Avoids deprecated or discouraged patterns
+
+## Default Delegation
+
+Before doing any non-trivial work directly, ask: "can a subagent do this?" Default answer is YES. Reserve direct work (in Opus) for: planning, routing decisions, final synthesis, single-line conversational answers, and trivial single-file edits (<20 lines). Everything else — research, multi-file reads, implementation, refactors, test writing — goes to a subagent following the Subagent Policy model table below.
 
 ## Subagent Policy
 
